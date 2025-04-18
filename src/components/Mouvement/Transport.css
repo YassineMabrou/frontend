@@ -1,0 +1,70 @@
+.transport-wrapper {
+  padding: 2rem;
+  min-height: 100vh;
+  color: #fff;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Form styling remains unchanged */
+.transport-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.transport-form input,
+.transport-form select,
+.transport-form textarea {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.transport-form button {
+  padding: 0.8rem;
+  font-weight: bold;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.transport-form button:hover {
+  background-color: #218838;
+}
+
+/* 🎯 Make only the table background white */
+.transport-report {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  background-color: white; /* 👈 Table background set to white */
+  color: #000; /* 👈 Black text for readability on white */
+}
+
+.transport-report th,
+.transport-report td {
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.transport-report th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.transport-report tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+.transport-report tr:hover td {
+  background-color: #eaeaea;
+}

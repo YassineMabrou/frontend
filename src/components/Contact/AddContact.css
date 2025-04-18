@@ -1,0 +1,87 @@
+
+  
+  .form-box {
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .form-box h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .contact-form input {
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.2s ease;
+  }
+  
+  .contact-form input:focus {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .success-msg {
+    margin-top: 1rem;
+    color: green;
+    font-weight: bold;
+  }
+  
+  .error-msg {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+  }
+  .multi-select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    height: 120px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .assigned-preview {
+    margin-top: 10px;
+    color: #333;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+  

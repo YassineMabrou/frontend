@@ -1,0 +1,122 @@
+/* Procedure Calendar Container */
+.procedure-calendar {
+  background-color: #fff; /* White background for the calendar container */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 20px;
+  margin-top: 30px;
+  position: relative; /* For the loading overlay */
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Calendar Section (Initially Hidden) */
+.calendar-section {
+  display: none; /* Hide initially */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Calendar Section Visible */
+.calendar-section.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Calendar Styles */
+.fc-toolbar {
+  background-color: #a56d43;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.fc-toolbar button {
+  background-color: #a56d43;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fc-toolbar button:hover {
+  background-color: #6a4e41; /* Darker button color on hover */
+}
+
+.fc-daygrid-day-top {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.fc-daygrid-day {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #f1f1f1;
+}
+
+.fc-daygrid-day-number {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Event Styling */
+.fc-event {
+  background-color: #a56d43;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.fc-event:hover {
+  background-color: #6a4e41;
+}
+
+.fc-event.fc-event-selected {
+  background-color: #3e8e41; /* Active color for clicked events */
+}
+
+/* Responsive Calendar: Ensure it looks good on smaller screens */
+@media (max-width: 768px) {
+  .fc-toolbar {
+    padding: 8px;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 14px;
+  }
+
+  .fc-event {
+    font-size: 10px;
+    padding: 5px;
+  }
+}

@@ -1,0 +1,61 @@
+.category-form {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .category-form h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .category-form select,
+  .category-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .category-form textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .category-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #a56d43;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .category-form button:hover {
+    background-color: #925d37;
+  }
+  .category-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #8d6e63; /* ← Updated color */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .category-form button:hover {
+    background-color: #7b5d53; /* Slightly darker for hover effect */
+  }
+  

@@ -1,0 +1,84 @@
+/* Overall container styling for the register form */
+.register-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 50px;
+}
+
+/* Heading for the form */
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Error message styling */
+.error {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Styling for the input container */
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input-container input,
+.input-container select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Styling for the 'Register as' section */
+.role-container h5 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Styling for the submit button */
+button[type="submit"] {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 500px) {
+  .register-container {
+    padding: 15px;
+  }
+
+  button[type="submit"] {
+    padding: 8px 16px;
+  }
+}
+.pension-form input::placeholder,
+.pension-form select::placeholder {
+  color: white;  /* Change placeholder text color to white */
+}
+
+.pension-form input,
+.pension-form select {
+  color: black;  /* Text color inside the input field */
+}

@@ -1,0 +1,190 @@
+/* === CSS Variables === */
+:root {
+  --light: #ffffff;
+  --dark: #2a3d4d;
+  --primary: #009dff;
+}
+
+/* Basic styling for sidebar */
+.sidebar {
+  background-color: var(--dark);
+  width: 300px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -300px;
+  transition: all 0.5s ease;
+  color: var(--light);
+  z-index: 999;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar when open */
+.sidebar.open {
+  left: 0;
+}
+
+/* Sidebar when closed */
+.sidebar.closed {
+  left: -300px;
+}
+
+/* Sidebar title */
+.sidebar-title {
+  font-size: 24px;
+  padding: 20px;
+  color: var(--light);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Sidebar menu */
+.sidebar-menu {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+/* Sidebar item */
+.sidebar-item {
+  background: none;
+  color: var(--light); /* ✅ Ensures white text */
+  padding: 15px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover effect */
+.sidebar-item:hover {
+  background-color: var(--primary);
+  transform: scale(1.1) translateX(10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+}
+
+/* Underline animation */
+.sidebar-item::before {
+  content: '';
+  position: absolute;
+  height: 3px;
+  width: 0;
+  left: 0;
+  bottom: 0;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.sidebar-item:hover::before {
+  width: 100%;
+}
+
+/* Toggle icon */
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-toggle .fa-bars,
+.sidebar-toggle .fa-times {
+  color: var(--light);
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+/* Toggle visibility logic */
+.sidebar.open .sidebar-toggle .fa-bars {
+  display: none;
+}
+
+.sidebar.open .sidebar-toggle .fa-times {
+  display: block;
+}
+
+/* Rotate toggle on hover */
+.sidebar-toggle:hover {
+  transform: rotate(180deg);
+}
+
+/* Page layout shift */
+.page-container {
+  padding-left: 300px;
+  transition: padding-left 0.3s ease;
+}
+
+.page-container .sidebar.open ~ .page-container {
+  padding-left: 85px;
+}
+
+/* Collapsed sidebar */
+.sidebar.collapsed {
+  width: 85px;
+}
+
+.sidebar.collapsed .sidebar-title {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-item {
+  text-align: center;
+  font-size: 14px;
+}
+
+.sidebar.collapsed .sidebar-item img {
+  width: 30px;
+  margin-right: 0;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  left: 20px;
+}
+
+/* Sidebar opening animation */
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 25px;
+  }
+
+  .sidebar.collapsed {
+    width: 6px;
+  }
+
+  .sidebar-toggle {
+    top: 10px;
+    left: 10px;
+  }
+
+  .page-container {
+    padding-left: 250px;
+  }
+
+  .page-container .sidebar.open ~ .page-container {
+    padding-left: 60px;
+  }
+}

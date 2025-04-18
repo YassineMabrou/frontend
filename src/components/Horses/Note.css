@@ -1,0 +1,160 @@
+/* Page Wrapper to push content further down */
+.page-wrapper {
+  margin-top: 80px; /* Reduced margin to bring content closer to the top, below navbar */
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  color: black;
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+tr {
+  height: 40px;
+}
+
+/* Search Bar */
+input[type="text"] {
+  padding: 15px;
+  width: 300px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin-top: 40px;  /* Reduced margin to bring the search bar down */
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input[type="text"]:focus {
+  border-color: #a56d43;
+  outline: none;
+}
+
+/* Buttons */
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+  background-color: #a56d43;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+button:hover {
+  background-color: #a56d43;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Modal Styling */
+.react-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.react-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 50px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"], textarea {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Small Button Styling */
+.small-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  background-color: #a56d43;
+  color: white;
+  margin: 0 10px;
+}
+
+.small-button:hover {
+  background-color: #a56d43;
+}
+
+.small-button.edit {
+  background-color: #a56d43;
+}
+
+.small-button.delete {
+  background-color: #a56d43;
+}
+
+/* Wrapper */
+.page-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Primary Add Note Button */
+.add-note-button {
+  background-color: #a56d43;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.add-note-button:hover {
+  background-color: #8c5835;
+}

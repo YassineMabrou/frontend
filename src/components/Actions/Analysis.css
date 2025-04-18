@@ -1,0 +1,124 @@
+/* Container styling */
+.analysis-container {
+    padding: 2rem;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3e7e7;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Title */
+  .analysis-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  /* Error message */
+  .analysis-error {
+    color: red;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  /* Filters */
+  .analysis-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .analysis-filters input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    width: 190px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .analysis-filters button {
+    padding: 0.5rem 1rem;
+    background-color: #8d6e63;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .analysis-filters button:hover {
+    background-color: #8d6e63;
+  }
+  
+  .analysis-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    max-width: 500px; /* optional container width */
+  }
+  
+  .analysis-form input,
+  .analysis-form select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;           /* responsive inside the form */
+    max-width: 350px;       /* 👈 control the max width */
+  }
+  
+  
+  .analysis-form button {
+    align-self: flex-start;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    background-color: #8d6e63;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .analysis-form button:hover {
+    background-color: #8d6e63;
+  }
+  
+  /* Table styling */
+  .analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .analysis-table th,
+  .analysis-table td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: left;
+      color: #000; /* Force black text */
+    }
+    
+  
+  
+  .analysis-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+  }
+  
+  .analysis-table td a {
+    color: #007acc;
+    text-decoration: none;
+  }
+  
+  .analysis-table td a:hover {
+    text-decoration: underline;
+  }
+  
+  .analysis-table td[colspan="6"] {
+    text-align: center;
+    color: #666;
+  }
+  

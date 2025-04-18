@@ -1,0 +1,38 @@
+.import-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .import-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .import-container input[type="file"] {
+    margin-bottom: 15px;
+  }
+  
+  .import-container button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .import-container button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  .import-container p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ff0000;
+  }
+  

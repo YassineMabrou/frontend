@@ -1,0 +1,38 @@
+/* TransportHistory.css */
+
+.transport-history-wrapper {
+  padding: 2rem;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  backdrop-filter: blur(4px); /* Optional: smoothens background if needed */
+}
+
+.transport-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: transparent; /* 👈 Transparent background */
+  color: #fff; /* Adjust text color for visibility on any background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.transport-history-table th,
+.transport-history-table td {
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Light transparent border */
+  padding: 10px 15px;
+  text-align: left;
+  background-color: rgba(0, 0, 0, 0.2); /* Optional: semi-transparent cell background */
+}
+
+.transport-history-table th {
+  background-color: rgba(0, 0, 0, 0.4); /* Slightly darker for headers */
+  font-weight: bold;
+}
+
+.transport-history-table tr:nth-child(even) td {
+  background-color: rgba(0, 0, 0, 0.15); /* Subtle zebra effect */
+}
+
+.transport-history-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
+}
