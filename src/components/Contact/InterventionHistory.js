@@ -9,14 +9,14 @@ const InterventionHistory = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:7002/api/contacts')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`)
       .then(res => setContacts(res.data))
       .catch(() => setError('Failed to load contacts.'));
   }, []);
 
   const fetchInterventions = async () => {
     try {
-      const res = await axios.get(`http://localhost:7002/api/contacts/${contactId}/interventions`);
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts/${contactId}/interventions`);
       setInterventions(res.data.interventions);
       setError('');
     } catch (err) {

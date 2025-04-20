@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from "../../context/AuthContext"; // ✅ Access user and logout function
+import { useAuth } from "../../context/AuthContext";
 import './Sidebaar.css';
 import './Actions.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,7 +19,7 @@ const Actions = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Or redirect to "/login"
+    navigate("/");
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +37,7 @@ const Actions = () => {
   useEffect(() => {
     const fetchHorses = async () => {
       try {
-        const response = await axios.get(`${process.env.BACKEND_API}/horses`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`);
         setHorses(response.data);
       } catch (error) {
         console.error('Error fetching horses:', error);
@@ -61,7 +61,7 @@ const Actions = () => {
         params.endDate = endDate;
       }
 
-      const response = await axios.get(`${process.env.BACKEND_API}/acts/filter`, { params });
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/acts/filter`, { params });
       setActs(response.data);
     } catch (error) {
       console.error('Error fetching acts:', error);

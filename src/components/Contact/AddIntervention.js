@@ -16,7 +16,7 @@ const AddIntervention = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:7002/api/contacts')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`)
       .then(res => setContacts(res.data))
       .catch(() => setError('Failed to load contacts.'));
   }, []);
@@ -33,10 +33,11 @@ const AddIntervention = () => {
 
     try {
       const { contactId, ...interventionData } = form;
-      const res = await axios.post(`http://localhost:7002/api/contacts/${contactId}/intervention`, interventionData);
-      setMessage(res.data.message);
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_API}/contacts/${contactId}/intervention`, interventionData);
+      setMessage(res.data.message || '✅ Intervention added successfully!');
       setForm({ contactId: '', horseName: '', type: '', description: '', date: '' });
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.error || 'Failed to add intervention.');
     }
   };

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // ✅ Access logout
 import './Locations.css';
 
-const LOCATIONS_URL = "http://localhost:7002/api/lieux";
+const LOCATIONS_URL = `${process.env.REACT_APP_BACKEND_API}/lieux`;
 
 const CurrentLocation = () => {
   const { user, logout } = useAuth(); // ✅ Access logout
@@ -18,7 +18,7 @@ const CurrentLocation = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/'); // Redirect to home or login page
+    navigate('/');
   };
 
   useEffect(() => {
@@ -166,7 +166,6 @@ const CurrentLocation = () => {
         <h1>📍 All Registered Locations</h1>
         {errorMessage && <p className="error">{errorMessage}</p>}
 
-        {/* Add location form visible only for admin */}
         {user && user.role === 'admin' && (
           <button className="toggle-add-btn" onClick={() => setShowAddForm(!showAddForm)}>
             {showAddForm ? '➖ Cancel' : '➕ Add New Location'}

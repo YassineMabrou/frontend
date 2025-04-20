@@ -3,10 +3,14 @@ import axios from "axios";
 import './Pension.css';
 
 const PensionManagement = () => {
+  const API = process.env.REACT_APP_BACKEND_API;
+
   const [pensions, setPensions] = useState([]);
   const [filteredPensions, setFilteredPensions] = useState([]);
   const [horses, setHorses] = useState([]);
-  const [showForm, setShowForm] = useState(false); // 👈 New state
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [pensionDetails, setPensionDetails] = useState({
     horseName: '',
     horseId: '',
@@ -16,8 +20,6 @@ const PensionManagement = () => {
     billingType: 'daily',
     status: 'active',
   });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     fetchPensions();
@@ -25,7 +27,7 @@ const PensionManagement = () => {
   }, []);
 
   const fetchPensions = async () => {
-    const response = await fetch('http://localhost:7002/api/pensions');
+    const response = await fetch(`${API}/pensions`);
     const data = await response.json();
     setPensions(data);
     setFilteredPensions(data);
@@ -33,7 +35,7 @@ const PensionManagement = () => {
 
   const fetchHorses = async () => {
     try {
-      const response = await axios.get('http://localhost:7002/api/horses');
+      const response = await axios.get(`${API}/horses`);
       setHorses(response.data);
     } catch (error) {
       console.error("Error fetching horses:", error);
@@ -42,67 +44,47 @@ const PensionManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setPensionDetails({
-      ...pensionDetails,
-      [name]: value,
-    });
+    setPensionDetails({ ...pensionDetails, [name]: value });
   };
 
   const handleHorseSelection = (e) => {
     const selectedHorseId = e.target.value;
     const selectedHorse = horses.find(h => h._id === selectedHorseId);
-    setPensionDetails({
-      ...pensionDetails,
-      horseId: selectedHorse._id,
-      horseName: selectedHorse.name,
-    });
+    if (selectedHorse) {
+      setPensionDetails({
+        ...pensionDetails,
+        horseId: selectedHorse._id,
+        horseName: selectedHorse.name,
+      });
+    }
   };
 
   const addPension = async () => {
-    const response = await fetch('http://localhost:7002/api/pensions', {
+    const response = await fetch(`${API}/pensions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(pensionDetails),
     });
     if (response.ok) {
       fetchPensions();
-      setPensionDetails({
-        horseName: '',
-        horseId: '',
-        startDate: '',
-        endDate: '',
-        rate: '',
-        billingType: 'daily',
-        status: 'active',
-      });
-      setShowForm(false); // 👈 Hide the form after adding
+      resetForm();
     }
   };
 
   const updatePension = async () => {
-    const response = await fetch(`http://localhost:7002/api/pensions/${pensionDetails.id}`, {
+    const response = await fetch(`${API}/pensions/${pensionDetails.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(pensionDetails),
     });
     if (response.ok) {
       fetchPensions();
-      setEditing(false);
-      setShowForm(false); // 👈 Hide the form after updating
-      setPensionDetails({
-        horseName: '',
-        horseId: '',
-        startDate: '',
-        endDate: '',
-        rate: '',
-        billingType: 'daily',
-        status: 'active',
-      });
+      resetForm();
     }
   };
 
   const deletePension = async (id) => {
-    const response = await fetch(`http://localhost:7002/api/pensions/${id}`, {
+    const response = await fetch(`${API}/pensions/${id}`, {
       method: 'DELETE',
     });
     if (response.ok) {
@@ -113,7 +95,7 @@ const PensionManagement = () => {
   const editPension = (pension) => {
     setPensionDetails(pension);
     setEditing(true);
-    setShowForm(true); // 👈 Show form when editing
+    setShowForm(true);
   };
 
   const handleSearch = (e) => {
@@ -123,8 +105,8 @@ const PensionManagement = () => {
       setFilteredPensions(pensions);
       return;
     }
-    const filtered = pensions.filter((pension) =>
-      pension.horseName.toLowerCase().includes(term.toLowerCase())
+    const filtered = pensions.filter((p) =>
+      p.horseName.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredPensions(filtered);
   };
@@ -141,6 +123,20 @@ const PensionManagement = () => {
     printWindow.document.write("</body></html>");
     printWindow.document.close();
     printWindow.print();
+  };
+
+  const resetForm = () => {
+    setPensionDetails({
+      horseName: '',
+      horseId: '',
+      startDate: '',
+      endDate: '',
+      rate: '',
+      billingType: 'daily',
+      status: 'active',
+    });
+    setShowForm(false);
+    setEditing(false);
   };
 
   return (
@@ -173,14 +169,12 @@ const PensionManagement = () => {
           <input
             type="date"
             name="startDate"
-            placeholder="Start Date"
             value={pensionDetails.startDate}
             onChange={handleInputChange}
           />
           <input
             type="date"
             name="endDate"
-            placeholder="End Date (optional)"
             value={pensionDetails.endDate}
             onChange={handleInputChange}
           />
@@ -191,16 +185,12 @@ const PensionManagement = () => {
             value={pensionDetails.rate}
             onChange={handleInputChange}
           />
-          <select
-            name="billingType"
-            value={pensionDetails.billingType}
-            onChange={handleInputChange}
-          >
+          <select name="billingType" value={pensionDetails.billingType} onChange={handleInputChange}>
             <option value="daily">Daily</option>
             <option value="monthly">Monthly</option>
           </select>
           <button onClick={editing ? updatePension : addPension}>
-            {editing ? 'Update Pension' : 'Add Pension'}
+            {editing ? "Update Pension" : "Add Pension"}
           </button>
         </div>
       )}
@@ -221,18 +211,18 @@ const PensionManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPensions.map((pension) => (
-                <tr key={pension._id}>
-                  <td>{pension.horseName}</td>
-                  <td>${pension.rate}</td>
-                  <td>{pension.status}</td>
-                  <td>{new Date(pension.startDate).toLocaleDateString()}</td>
-                  <td>{pension.endDate ? new Date(pension.endDate).toLocaleDateString() : "Ongoing"}</td>
-                  <td>{pension.billingType}</td>
+              {filteredPensions.map(p => (
+                <tr key={p._id}>
+                  <td>{p.horseName}</td>
+                  <td>${p.rate}</td>
+                  <td>{p.status}</td>
+                  <td>{new Date(p.startDate).toLocaleDateString()}</td>
+                  <td>{p.endDate ? new Date(p.endDate).toLocaleDateString() : "Ongoing"}</td>
+                  <td>{p.billingType}</td>
                   <td>
-                    <button className="action-btn edit" onClick={() => editPension(pension)}>Edit</button>
-                    <button className="action-btn delete" onClick={() => deletePension(pension._id)}>Delete</button>
-                    <button className="action-btn print" onClick={() => printPension(pension)}>Print</button>
+                    <button className="action-btn edit" onClick={() => editPension(p)}>Edit</button>
+                    <button className="action-btn delete" onClick={() => deletePension(p._id)}>Delete</button>
+                    <button className="action-btn print" onClick={() => printPension(p)}>Print</button>
                   </td>
                 </tr>
               ))}

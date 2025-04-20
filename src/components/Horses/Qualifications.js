@@ -8,10 +8,12 @@ const QualificationManager = () => {
   const [qualificationError, setQualificationError] = useState(null);
   const [statsError, setStatsError] = useState(null);
 
+  const API = process.env.REACT_APP_BACKEND_API;
+
   // Fetch all qualifications
   const fetchQualifications = async () => {
     try {
-      const response = await axios.get("http://localhost:7002/api/qualifications");
+      const response = await axios.get(`${API}/qualifications`);
       setQualifications(response.data);
     } catch (error) {
       setQualificationError("Error fetching qualifications.");
@@ -22,7 +24,7 @@ const QualificationManager = () => {
   // Fetch performance statistics
   const fetchStats = async () => {
     try {
-      const response = await axios.get("http://localhost:7002/api/qualifications/stats");
+      const response = await axios.get(`${API}/qualifications/stats`);
       setStats(response.data);
     } catch (error) {
       setStatsError("Error fetching statistics.");

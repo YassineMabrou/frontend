@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './HorseAct.css';  
+import './HorseAct.css';
+
 const ActList = () => {
   const [acts, setActs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [horses, setHorses] = useState({}); // Store horse names by their ID
+  const [horses, setHorses] = useState({});
+
+  const BASE_URL = process.env.REACT_APP_BACKEND_API;
 
   useEffect(() => {
     fetchActs();
@@ -13,17 +16,14 @@ const ActList = () => {
   const fetchActs = async () => {
     setLoading(true);
     try {
-      // Fetch the acts first
-      const responseActs = await axios.get('http://localhost:7002/api/acts');
+      const responseActs = await axios.get(`${BASE_URL}/acts`);
       setActs(responseActs.data);
 
-      // Fetch all horses' data
-      const responseHorses = await axios.get('http://localhost:7002/api/horses');
+      const responseHorses = await axios.get(`${BASE_URL}/horses`);
       const horsesData = responseHorses.data;
 
-      // Map horse IDs to their names
       const horsesMap = horsesData.reduce((acc, horse) => {
-        acc[horse._id] = horse.name; // Assuming horse has _id and name properties
+        acc[horse._id] = horse.name;
         return acc;
       }, {});
 
@@ -39,8 +39,7 @@ const ActList = () => {
     try {
       const confirmation = window.confirm('Are you sure you want to delete this act?');
       if (confirmation) {
-        await axios.delete(`http://localhost:7002/api/acts/${id}`);
-        // Remove the deleted act from the state without refetching the entire list
+        await axios.delete(`${BASE_URL}/acts/${id}`);
         setActs(acts.filter((act) => act._id !== id));
       }
     } catch (error) {
@@ -55,7 +54,7 @@ const ActList = () => {
       {!loading && acts.length === 0 && <p>No acts found.</p>}
 
       {!loading && acts.length > 0 && (
-        <table border="1" cellpadding="10" cellspacing="0">
+        <table border="1" cellPadding="10" cellSpacing="0">
           <thead>
             <tr>
               <th>Type</th>
@@ -81,7 +80,7 @@ const ActList = () => {
                   {act.horses.length > 0 ? (
                     act.horses.map((horseId) => (
                       <span key={horseId}>
-                        {horseId} {/* Display horse ID */}
+                        {horses[horseId] || horseId}
                         <br />
                       </span>
                     ))
@@ -95,8 +94,12 @@ const ActList = () => {
                       {act.attachments.map((attachment, index) => (
                         <li key={index}>
                           {typeof attachment === 'object' ? (
-                            <a href={`http://localhost:7002/uploads/${attachment._id}`} target="_blank" rel="noopener noreferrer">
-                              {attachment._id} {/* Replace _id with whatever property is useful */}
+                            <a
+                              href={`${BASE_URL.replace('/api', '')}/uploads/${attachment._id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {attachment._id}
                             </a>
                           ) : (
                             attachment
@@ -120,7 +123,6 @@ const ActList = () => {
                   )}
                 </td>
                 <td>
-                  {/* Only the Delete button remains */}
                   <button onClick={() => handleDelete(act._id)}>Delete</button>
                 </td>
               </tr>

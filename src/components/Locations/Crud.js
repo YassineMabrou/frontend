@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Location.css';
 
-const API_URL = 'http://localhost:7002/api/lieux';
+const API_URL = `${process.env.REACT_APP_BACKEND_API}/lieux`;
 
 const LocationManager = () => {
   const [locations, setLocations] = useState([]);

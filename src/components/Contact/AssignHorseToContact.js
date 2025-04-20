@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './Assign.css';
 
-
-const CONTACTS_API = "http://localhost:7002/api/contacts";
-const HORSES_API = "http://localhost:7002/api/horses";
-
 const AssignHorseToContact = () => {
   const [contacts, setContacts] = useState([]);
   const [horses, setHorses] = useState([]);
@@ -13,6 +9,9 @@ const AssignHorseToContact = () => {
   const [selectedHorseName, setSelectedHorseName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const CONTACTS_API = `${process.env.REACT_APP_BACKEND_API}/contacts`;
+  const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +28,7 @@ const AssignHorseToContact = () => {
     };
 
     fetchData();
-  }, []);
+  }, [CONTACTS_API, HORSES_API]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import "./Analysis.css"; // <-- Make sure to create and import the CSS file
+import "./Analysis.css";
 
-const API_BASE_URL = `${process.env.BACKEND_API}`;
+const API_BASE_URL = `${process.env.REACT_APP_BACKEND_API}`;
 
 const AnalysisManager = () => {
   const [analyses, setAnalyses] = useState([]);

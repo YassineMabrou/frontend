@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import './HorseList.css';
 
-const API_URL = "http://localhost:7002/api/horses";
-const NOTES_URL = "http://localhost:7002/api/notes";
-const PRESCRIPTION_URL = "http://localhost:7002/api/prescriptions";
+const BASE_API = process.env.REACT_APP_BACKEND_API;
+const API_URL = `${BASE_API}/horses`;
+const NOTES_URL = `${BASE_API}/notes`;
+const PRESCRIPTION_URL = `${BASE_API}/prescriptions`;
 
 const HorseList = () => {
   const [horses, setHorses] = useState([]);

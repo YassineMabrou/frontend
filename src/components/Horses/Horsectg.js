@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import './Categories.css';
 
-
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(null);
@@ -11,14 +10,13 @@ const Categories = () => {
   const [name, setName] = useState('');
   const [type, setType] = useState('horse');
   const [criteria, setCriteria] = useState('');
-  const [loading, setLoading] = useState(true); // New loading state for categories and category details
-  const [error, setError] = useState(null); // New error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { id } = useParams();
-  const navigate = useNavigate(); // Replaced useHistory with useNavigate
+  const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:7002/api'; // Backend API base URL (adjust port if needed)
+  const API_URL = process.env.REACT_APP_BACKEND_API;
 
-  // Fetch all categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -34,9 +32,8 @@ const Categories = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [API_URL]);
 
-  // Fetch specific category details
   useEffect(() => {
     if (id) {
       const fetchCategoryDetails = async () => {
@@ -60,20 +57,18 @@ const Categories = () => {
 
       fetchCategoryDetails();
     }
-  }, [id]);
+  }, [id, API_URL]);
 
-  // Handle category deletion
   const deleteCategory = async (categoryId) => {
     try {
       await axios.delete(`${API_URL}/categories/${categoryId}`);
       setCategories(categories.filter((category) => category._id !== categoryId));
-      navigate('/categories');  // Replaced history.push with navigate
+      navigate('/categories');
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Handle category update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -83,7 +78,7 @@ const Categories = () => {
           type,
           criteria: JSON.parse(criteria || '{}'),
         });
-        navigate(`/categories/${id}`);  // Replaced history.push with navigate
+        navigate(`/categories/${id}`);
       }
     } catch (error) {
       console.error(error);
@@ -91,7 +86,6 @@ const Categories = () => {
     }
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'name') setName(value);
@@ -99,43 +93,39 @@ const Categories = () => {
     if (name === 'criteria') setCriteria(value);
   };
 
-  // Render the categories table
-  const renderCategoriesTable = () => {
-    return (
-      <div>
-        <h1>Categories</h1>
-        {error && <div style={{ color: 'red' }}>{error}</div>} {/* Show error if any */}
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Criteria</th>
-              <th>Actions</th>
+  const renderCategoriesTable = () => (
+    <div>
+      <h1>Categories</h1>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Criteria</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map((category) => (
+            <tr key={category._id}>
+              <td>{category.name}</td>
+              <td>{category.type}</td>
+              <td>{JSON.stringify(category.criteria)}</td>
+              <td>
+                <button onClick={() => deleteCategory(category._id)}>Delete</button>
+                <Link to={`/categories/${category._id}`}>View</Link>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => (
-              <tr key={category._id}>
-                <td>{category.name}</td>
-                <td>{category.type}</td>
-                <td>{JSON.stringify(category.criteria)}</td>
-                <td>
-                  <button onClick={() => deleteCategory(category._id)}>Delete</button>
-                  <Link to={`/categories/${category._id}`}>View</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
-  // Render the category details view
   const renderCategoryDetails = () => {
-    if (loading) return <div>Loading...</div>; // Show loading state
-    if (error) return <div style={{ color: 'red' }}>{error}</div>; // Show error message
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
     return (
       <div>
@@ -153,52 +143,35 @@ const Categories = () => {
     );
   };
 
-  // Render the category edit form
-  const renderCategoryEditForm = () => {
-    return (
-      <div>
-        <h1>Edit Category</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Type</label>
-            <select name="type" value={type} onChange={handleInputChange} required>
-              <option value="horse">Horse</option>
-              <option value="note">Note</option>
-            </select>
-          </div>
-          <div>
-            <label>Criteria</label>
-            <textarea
-              name="criteria"
-              value={criteria}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button type="submit">Update Category</button>
-        </form>
-      </div>
-    );
-  };
+  const renderCategoryEditForm = () => (
+    <div>
+      <h1>Edit Category</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name</label>
+          <input type="text" name="name" value={name} onChange={handleInputChange} required />
+        </div>
+        <div>
+          <label>Type</label>
+          <select name="type" value={type} onChange={handleInputChange} required>
+            <option value="horse">Horse</option>
+            <option value="note">Note</option>
+          </select>
+        </div>
+        <div>
+          <label>Criteria</label>
+          <textarea name="criteria" value={criteria} onChange={handleInputChange} />
+        </div>
+        <button type="submit">Update Category</button>
+      </form>
+    </div>
+  );
 
-  // Conditional rendering based on the route or state
-  if (loading) return <div>Loading...</div>; // Show loading state for categories
-  if (id && category) {
-    return renderCategoryDetails();
-  } else if (id) {
-    return renderCategoryEditForm();
-  } else {
-    return renderCategoriesTable(); // Render the categories table instead of list
-  }
+  if (loading) return <div>Loading...</div>;
+  if (id && category) return renderCategoryDetails();
+  if (id) return renderCategoryEditForm();
+
+  return renderCategoriesTable();
 };
 
 export default Categories;

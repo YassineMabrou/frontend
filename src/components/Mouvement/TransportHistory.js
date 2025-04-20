@@ -11,7 +11,7 @@ const TransportHistory = () => {
     const fetchHistory = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('http://localhost:7002/api/transports/history');
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/transports/history`);
         setHistory(res.data);
       } catch (error) {
         console.error('❌ Error fetching transport history:', error);
@@ -25,7 +25,6 @@ const TransportHistory = () => {
 
   return (
     <div className="transport-history-wrapper">
-
       {loading && <p>Loading...</p>}
 
       {history.length > 0 ? (

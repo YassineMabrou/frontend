@@ -18,7 +18,7 @@ const AddContact = ({ onContactAdded }) => {
 
   useEffect(() => {
     // Fetch horses for the dropdown
-    axios.get('http://localhost:7002/api/horses')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`)
       .then(res => setAllHorses(res.data))
       .catch(err => console.error('Failed to fetch horses:', err));
   }, []);
@@ -40,7 +40,7 @@ const AddContact = ({ onContactAdded }) => {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:7002/api/contacts', formData);
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_API}/contacts`, formData);
       setMessage('✅ Contact added successfully!');
       setFormData({
         name: '',

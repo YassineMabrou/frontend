@@ -18,7 +18,7 @@ const CreateAct = () => {
   useEffect(() => {
     const fetchHorses = async () => {
       try {
-        const response = await axios.get(`${process.env.BACKEND_API}/horses`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`);
         setAllHorses(response.data);
       } catch (error) {
         console.error("Error fetching horses:", error);
@@ -42,7 +42,7 @@ const CreateAct = () => {
     };
 
     try {
-      const response = await axios.post(`${process.env.BACKEND_API}/acts`, newAct);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/acts`, newAct);
       console.log("Act created successfully:", response.data);
     } catch (error) {
       console.error("Error creating act:", error);

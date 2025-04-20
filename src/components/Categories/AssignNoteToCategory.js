@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AssignNoteToCategory.css';
 
-
 const AssignNoteToCategory = () => {
   const [categories, setCategories] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -10,11 +9,11 @@ const AssignNoteToCategory = () => {
 
   // Fetch categories and notes
   useEffect(() => {
-    axios.get( `${process.env.BACKEND_API}/categories`)
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`)
       .then(res => setCategories(res.data))
       .catch(console.error);
 
-    axios.get( `${process.env.BACKEND_API}/notes`)
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/notes`)
       .then(res => setNotes(res.data))
       .catch(console.error);
   }, []);
@@ -23,8 +22,7 @@ const AssignNoteToCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Assuming the backend expects the note to contain categoryId
-      await axios.put(`${process.env.BACKEND_API}/notes/${form.noteId}`, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_API}/notes/${form.noteId}`, {
         category: form.categoryId,
       });
       alert('Note assigned to category successfully');

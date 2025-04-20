@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AssignNoteToCategory.css';
 
-
 const AssignHorseToCategory = () => {
   const [categories, setCategories] = useState([]);
   const [horses, setHorses] = useState([]);
@@ -13,8 +12,8 @@ const AssignHorseToCategory = () => {
     const fetchData = async () => {
       try {
         const [catRes, horseRes] = await Promise.all([
-          axios.get(`${process.env.BACKEND_API}/categories`),
-          axios.get(`${process.env.BACKEND_API}/horses`)
+          axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`),
+          axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`)
         ]);
         setCategories(catRes.data);
         setHorses(horseRes.data);
@@ -29,7 +28,7 @@ const AssignHorseToCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.BACKEND_API}/categories/horses`, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_API}/categories/horses`, {
         name: horses.find(h => h._id === form.horseId)?.name,
         categoryId: form.categoryId
       });
@@ -37,6 +36,7 @@ const AssignHorseToCategory = () => {
       setForm({ horseId: '', categoryId: '' });
     } catch (err) {
       alert('Error assigning horse');
+      console.error(err);
     }
   };
 

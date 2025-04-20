@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ Use navigate for redirection
-import { useAuth } from '../../context/AuthContext'; // ✅ Correct path to AuthContext
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 import './Contact.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,13 +12,15 @@ const AddIntervention = lazy(() => import('./AddIntervention'));
 const InterventionHistory = lazy(() => import('./InterventionHistory'));
 
 const Contact = () => {
-  const { logout,  } = useAuth(); // ✅ Access the logout function from context
-  const navigate = useNavigate(); // ✅ For redirecting after logout
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [editingContact, setEditingContact] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [view, setView] = useState('default');
+
   const [formData, setFormData] = useState({
     name: '',
     role: '',
@@ -41,7 +43,7 @@ const Contact = () => {
 
   const fetchContacts = async () => {
     try {
-      const res = await axios.get('http://localhost:7002/api/contacts');
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`);
       setContacts(res.data);
     } catch (err) {
       console.error('Error fetching contacts:', err);
@@ -52,7 +54,7 @@ const Contact = () => {
     e.preventDefault();
     try {
       const query = new URLSearchParams(searchParams).toString();
-      const res = await axios.get(`http://localhost:7002/api/contacts/search?${query}`);
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts/search?${query}`);
       setContacts(res.data);
     } catch (err) {
       console.error('Search error:', err);
@@ -67,7 +69,7 @@ const Contact = () => {
   const deleteContact = async (id) => {
     if (!window.confirm('Are you sure you want to delete this contact?')) return;
     try {
-      await axios.delete(`http://localhost:7002/api/contacts/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_API}/contacts/${id}`);
       fetchContacts();
     } catch (err) {
       console.error('Error deleting contact:', err);
@@ -89,7 +91,7 @@ const Contact = () => {
   const updateContact = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:7002/api/contacts/${editingContact._id}`, formData);
+      await axios.put(`${process.env.REACT_APP_BACKEND_API}/contacts/${editingContact._id}`, formData);
       setEditingContact(null);
       setShowEditForm(false);
       setFormData({ name: '', role: '', email: '', phone: '', availability: '' });
@@ -100,8 +102,8 @@ const Contact = () => {
   };
 
   const handleLogout = () => {
-    logout(); // Clear user session from context
-    navigate('/'); // Redirect to homepage (or login page)
+    logout();
+    navigate('/');
   };
 
   const renderMainView = () => {
@@ -131,27 +133,12 @@ const Contact = () => {
         return (
           <>
             <form onSubmit={handleSearch} className="search-bar">
-              <input
-                type="text"
-                placeholder="Search by name"
-                value={searchParams.name}
-                onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })}
-                className="search-input"
-              />
-              <input
-                type="text"
-                placeholder="Search by role"
-                value={searchParams.role}
-                onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })}
-                className="search-input"
-              />
-              <input
-                type="text"
-                placeholder="Search by availability"
-                value={searchParams.availability}
-                onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })}
-                className="search-input"
-              />
+              <input type="text" placeholder="Search by name" value={searchParams.name}
+                onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by role" value={searchParams.role}
+                onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by availability" value={searchParams.availability}
+                onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
               <button type="submit" className="btn-search">🔍 Search</button>
               <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
             </form>
@@ -261,7 +248,6 @@ const Contact = () => {
         <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
-            {/* Sidebar items visible only for user */}
             <li><button className="sidebar-item" onClick={() => setView('intervention')}>Add Intervention</button></li>
           </ul>
         </div>

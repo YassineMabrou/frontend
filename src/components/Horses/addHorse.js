@@ -25,7 +25,7 @@ const AddHorseForm = () => {
 
   // Fetch locations on mount
   useEffect(() => {
-    axios.get('http://localhost:7002/api/lieux')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/lieux`)
       .then(res => setLocations(res.data))
       .catch(err => console.error('Error fetching locations:', err));
   }, []);
@@ -52,7 +52,7 @@ const AddHorseForm = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:7002/api/horses/add', horse);
+      await axios.post(`${process.env.REACT_APP_BACKEND_API}/horses/add`, horse);
       alert('Le cheval a été ajouté avec succès');
 
       setHorse({

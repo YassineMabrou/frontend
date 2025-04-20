@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const QUALIFICATIONS_API = "http://localhost:7002/api/qualifications";
-const HORSES_API = "http://localhost:7002/api/horses";
+const QUALIFICATIONS_API = `${process.env.REACT_APP_BACKEND_API}/qualifications`;
+const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
 const QualificationsManager = () => {
   const [qualifications, setQualifications] = useState([]);

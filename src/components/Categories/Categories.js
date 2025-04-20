@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ useNavigate
-import { useAuth } from '../../context/AuthContext'; // ✅ correct path based on folder location
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -12,8 +12,8 @@ const AssignHorseToCategory = lazy(() => import('./AssignHorseToCategory'));
 const AssignNoteToCategory = lazy(() => import('./AssignNoteToCategory'));
 
 const Categories = () => {
-  const { logout,  } = useAuth(); // ✅ access logout and user data
-  const navigate = useNavigate(); // ✅ for redirecting
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -29,7 +29,7 @@ const Categories = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:7002/api/categories');
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`);
       setCategories(res.data);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
@@ -39,7 +39,7 @@ const Categories = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        await axios.delete(`http://localhost:7002/api/categories/${id}`);
+        await axios.delete(`${process.env.REACT_APP_BACKEND_API}/categories/${id}`);
         setCategories(categories.filter((cat) => cat._id !== id));
       } catch (error) {
         alert('Error deleting category');
@@ -58,7 +58,7 @@ const Categories = () => {
 
   const handleEditSubmit = async (id) => {
     try {
-      await axios.put(`http://localhost:7002/api/categories/${id}`, editForm);
+      await axios.put(`${process.env.REACT_APP_BACKEND_API}/categories/${id}`, editForm);
       setEditCategoryId(null);
       fetchCategories();
     } catch (error) {
@@ -66,10 +66,9 @@ const Categories = () => {
     }
   };
 
-  // ✅ logout + redirect
   const handleLogout = () => {
     logout();
-    navigate("/"); // Or redirect to "/login"
+    navigate('/');
   };
 
   return (
@@ -85,7 +84,6 @@ const Categories = () => {
         width: '100%',
       }}
     >
-      {/* Navbar with links visible for all users */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -120,7 +118,6 @@ const Categories = () => {
         <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
-            {/* Sidebar items visible for all users */}
             <li><button className="sidebar-item" onClick={() => setActiveView('addHorse')}>Add a category for horses</button></li>
             <li><button className="sidebar-item" onClick={() => setActiveView('addNote')}>Add a category for notes</button></li>
             <li><button className="sidebar-item" onClick={() => setActiveView('assignHorse')}>Assign Horse to Category</button></li>

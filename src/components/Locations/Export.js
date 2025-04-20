@@ -8,11 +8,13 @@ const ExportLieu = () => {
   const [format, setFormat] = useState('pdf');
   const [error, setError] = useState('');
 
+  const API_BASE = process.env.REACT_APP_BACKEND_API;
+
   useEffect(() => {
-    axios.get('http://localhost:7002/api/lieux')
+    axios.get(`${API_BASE}/lieux`)
       .then(res => setLieux(res.data))
       .catch(err => setError('Failed to load locations: ' + err.message));
-  }, []);
+  }, [API_BASE]);
 
   const handleExport = async () => {
     if (!selectedLieu || !format) {
@@ -21,7 +23,7 @@ const ExportLieu = () => {
 
     try {
       const link = document.createElement('a');
-      link.href = `http://localhost:7002/api/lieux/${selectedLieu}/export?format=${format}`;
+      link.href = `${API_BASE}/lieux/${selectedLieu}/export?format=${format}`;
       link.setAttribute('download', `lieu_export.${format === 'excel' ? 'xlsx' : format}`);
       document.body.appendChild(link);
       link.click();

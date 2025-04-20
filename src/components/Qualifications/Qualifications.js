@@ -4,8 +4,9 @@ import { useAuth } from "../../context/AuthContext"; // ✅ Import useAuth
 import axios from "axios";
 import "./Qualification.css";
 
-const API_URL = "http://localhost:7002/api/qualifications";
-const HORSES_API = "http://localhost:7002/api/horses";
+// ✅ Use environment variables
+const API_URL = `${process.env.REACT_APP_BACKEND_API}/qualifications`;
+const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
 const Qualifications = () => {
   const { logout } = useAuth(); // ✅ Access logout function from context
@@ -102,10 +103,9 @@ const Qualifications = () => {
     return found ? found.name : "Unknown Horse";
   };
 
-  // ✅ Logout function
   const handleLogout = () => {
-    logout(); // Clear user session from context
-    navigate("/"); // Redirect to homepage (or login page)
+    logout();
+    navigate("/");
   };
 
   return (
@@ -121,7 +121,6 @@ const Qualifications = () => {
         width: "100%",
       }}
     >
-      {/* Navbar with links visible for all users */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -132,7 +131,6 @@ const Qualifications = () => {
           <li><Link to="/locations">Location</Link></li>
           <li><Link to="/qualification">Qualifications</Link></li>
           <li><Link to="/contacts">Contact</Link></li>
-          {/* Log out button */}
           <li>
             <button
               onClick={handleLogout}
@@ -189,7 +187,6 @@ const Qualifications = () => {
                 </option>
               ))}
             </select>
-
             <input
               type="text"
               name="competitionName"

@@ -77,7 +77,7 @@ const Mouvements = () => {
               <div className="history-header">
                 <h2>📜 Movement History</h2>
                 <a
-                  href="http://localhost:7002/api/transports/report?export=csv"
+                  href={`${process.env.REACT_APP_BACKEND_API}/transports/report?export=csv`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="csv-download-button"

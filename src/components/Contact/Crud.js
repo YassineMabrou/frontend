@@ -15,7 +15,7 @@ const Contacts = () => {
   // Fetch all contacts
   const fetchContacts = async () => {
     try {
-      const res = await axios.get("/api/contacts");
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`);
       setContacts(res.data);
     } catch (err) {
       console.error("Failed to fetch contacts", err);
@@ -30,7 +30,7 @@ const Contacts = () => {
   const deleteContact = async (id) => {
     if (!window.confirm("Are you sure you want to delete this contact?")) return;
     try {
-      await axios.delete(`/api/contacts/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_API}/contacts/${id}`);
       fetchContacts();
     } catch (err) {
       console.error("Delete failed", err);
@@ -41,7 +41,7 @@ const Contacts = () => {
   const updateContact = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/contacts/${editingContact._id}`, formData);
+      await axios.put(`${process.env.REACT_APP_BACKEND_API}/contacts/${editingContact._id}`, formData);
       setEditingContact(null);
       setFormData({ name: "", role: "", email: "", phone: "", availability: "" });
       fetchContacts();

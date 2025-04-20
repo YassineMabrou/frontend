@@ -8,27 +8,33 @@ const EditDeleteCategory = () => {
   const [updatedData, setUpdatedData] = useState({ name: '', criteria: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:7002/api/categories')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`)
       .then(res => setCategories(res.data))
       .catch(err => console.error(err));
   }, []);
 
   const handleEdit = async (id) => {
     try {
-      await axios.put(`http://localhost:7002/api/categories/${id}`, updatedData);
+      await axios.put(`${process.env.REACT_APP_BACKEND_API}/categories/${id}`, updatedData);
       alert('Category updated');
+      setEditing(null);
+      const refreshed = await axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`);
+      setCategories(refreshed.data);
     } catch (err) {
       alert('Error updating category');
+      console.error(err);
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
     try {
-      await axios.delete(`http://localhost:7002/api/categories/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_API}/categories/${id}`);
       alert('Category deleted');
+      setCategories(categories.filter(cat => cat._id !== id));
     } catch (err) {
       alert('Error deleting category');
+      console.error(err);
     }
   };
 
@@ -36,19 +42,30 @@ const EditDeleteCategory = () => {
     <div>
       <h3>Edit/Delete Categories</h3>
       {categories.map(cat => (
-        <div key={cat._id}>
+        <div key={cat._id} style={{ marginBottom: '1rem' }}>
           {editing === cat._id ? (
             <>
-              <input value={updatedData.name} onChange={e => setUpdatedData({ ...updatedData, name: e.target.value })} />
-              <input value={updatedData.criteria} onChange={e => setUpdatedData({ ...updatedData, criteria: e.target.value })} />
-              <button onClick={() => handleEdit(cat._id)}>Save</button>
-              <button onClick={() => setEditing(null)}>Cancel</button>
+              <input
+                value={updatedData.name}
+                onChange={e => setUpdatedData({ ...updatedData, name: e.target.value })}
+                placeholder="Category Name"
+              />
+              <input
+                value={updatedData.criteria}
+                onChange={e => setUpdatedData({ ...updatedData, criteria: e.target.value })}
+                placeholder="Criteria"
+              />
+              <button onClick={() => handleEdit(cat._id)}>💾 Save</button>
+              <button onClick={() => setEditing(null)}>❌ Cancel</button>
             </>
           ) : (
             <>
-              <span>{cat.name}</span> - <span>{cat.criteria}</span>
-              <button onClick={() => { setEditing(cat._id); setUpdatedData({ name: cat.name, criteria: cat.criteria }); }}>Edit</button>
-              <button onClick={() => handleDelete(cat._id)}>Delete</button>
+              <strong>{cat.name}</strong> — <em>{cat.criteria || 'No criteria'}</em>
+              <button onClick={() => {
+                setEditing(cat._id);
+                setUpdatedData({ name: cat.name, criteria: cat.criteria || '' });
+              }}>✏️ Edit</button>
+              <button onClick={() => handleDelete(cat._id)}>🗑️ Delete</button>
             </>
           )}
         </div>
@@ -58,5 +75,3 @@ const EditDeleteCategory = () => {
 };
 
 export default EditDeleteCategory;
-
-

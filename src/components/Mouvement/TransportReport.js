@@ -9,7 +9,7 @@ const TransportReport = () => {
   const fetchReport = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:7002/api/transports/report');
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/transports/report`);
       setReport(res.data.report);
     } catch (err) {
       console.error('Error fetching report:', err);
@@ -31,7 +31,7 @@ const TransportReport = () => {
 
         {/* CSV Download Link */}
         <a
-          href="http://localhost:7002/api/transports/report?export=csv"
+          href={`${process.env.REACT_APP_BACKEND_API}/transports/report?export=csv`}
           target="_blank"
           rel="noopener noreferrer"
           className="download-link"

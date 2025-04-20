@@ -9,11 +9,12 @@ const HorseLocationApp = () => {
   const [locations, setLocations] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [showForm, setShowForm] = useState(false); // Toggle for form
+  const [showForm, setShowForm] = useState(false);
 
-  const HORSE_API = 'http://localhost:7002/api/horses';
-  const LOCATION_API = 'http://localhost:7002/api/lieux';
-  const HORSE_ASSIGN_API = 'http://localhost:7002/api/lieux/assign';
+  const BASE_API = process.env.REACT_APP_BACKEND_API;
+  const HORSE_API = `${BASE_API}/horses`;
+  const LOCATION_API = `${BASE_API}/lieux`;
+  const HORSE_ASSIGN_API = `${BASE_API}/lieux/assign`;
 
   const fetchData = async () => {
     try {
@@ -46,7 +47,7 @@ const HorseLocationApp = () => {
       setError('');
       setHorseId('');
       setLocationId('');
-      setShowForm(false); // Hide form after success
+      setShowForm(false);
       fetchData();
     } catch (err) {
       console.error('Error assigning location:', err);
@@ -76,12 +77,10 @@ const HorseLocationApp = () => {
       {message && <p className="message success">{message}</p>}
       {error && <p className="message error">{error}</p>}
 
-      {/* Toggle Button */}
       <button className="assign-toggle-btn" onClick={() => setShowForm(!showForm)}>
         {showForm ? 'Cancel' : '+ Assign Horse'}
       </button>
 
-      {/* Assignment Form (conditionally rendered) */}
       {showForm && (
         <div className="assign-form">
           <h3>Assign Form</h3>
@@ -113,7 +112,6 @@ const HorseLocationApp = () => {
         </div>
       )}
 
-      {/* Display Table of Assignments */}
       <h2>Assigned Horses</h2>
       {assignmentRows.length === 0 ? (
         <p>No horses assigned yet.</p>

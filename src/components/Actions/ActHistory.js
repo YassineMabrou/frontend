@@ -14,7 +14,7 @@ const ActHistory = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.BACKEND_API}/horses`)
+      .get(`${process.env.REACT_APP_BACKEND_API}/horses`)
       .then((res) => {
         setHorses(res.data);
         if (res.data.length > 0) {
@@ -52,7 +52,7 @@ const ActHistory = () => {
         order,
       };
 
-      const res = await axios.get(`${process.env.BACKEND_API}/acts`, { params });
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/acts`, { params });
       setActs(res.data);
     } catch (err) {
       console.error("Failed to fetch filtered acts:", err);
@@ -61,7 +61,7 @@ const ActHistory = () => {
 
   const handleExportCSV = async () => {
     try {
-      const res = await axios.get(`${process.env.BACKEND_API}/acts`, {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/acts`, {
         params: {
           horseId,
           exportFormat: "csv",
@@ -245,7 +245,7 @@ const thTdStyle = {
   borderBottom: "1px solid #e2e8f0",
   textAlign: "left",
   fontSize: "0.95rem",
-  color: "#000", // 🔥 Force black text for all table cells
+  color: "#000",
 };
 
 const noDataStyle = {

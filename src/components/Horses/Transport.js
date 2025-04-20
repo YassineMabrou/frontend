@@ -4,21 +4,22 @@ import axios from 'axios';
 
 const TransportHistory = () => {
     const [transports, setTransports] = useState([]);
-    
+    const API = process.env.REACT_APP_BACKEND_API;
+
     useEffect(() => {
         // Fetch transport history from the backend
         const fetchTransportHistory = async () => {
             try {
-                // Update the API URL to reflect the correct path
-                const response = await axios.get('http://localhost:7002/api/transports/history');
+                // Use environment variable for base API URL
+                const response = await axios.get(`${API}/transports/history`);
                 setTransports(response.data);
             } catch (error) {
                 console.error('Error fetching transport history:', error);
             }
         };
-        
+
         fetchTransportHistory();
-    }, []);
+    }, [API]);
 
     return (
         <div className="history-container">

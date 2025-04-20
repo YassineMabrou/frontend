@@ -19,7 +19,7 @@ const Transport = () => {
 
   // Fetch horses list
   useEffect(() => {
-    axios.get('http://localhost:7002/api/horses')
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`)
       .then((res) => setHorses(res.data))
       .catch((err) => console.error('❌ Error fetching horses:', err));
   }, []);
@@ -44,7 +44,7 @@ const Transport = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:7002/api/transports', form);
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_API}/transports`, form);
       alert(res.data.message || 'Transport registered successfully');
       resetForm();
     } catch (err) {
@@ -55,7 +55,7 @@ const Transport = () => {
 
   const fetchReport = async () => {
     try {
-      const res = await axios.get('http://localhost:7002/api/transports/report');
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/transports/report`);
       setReport(res.data.report);
     } catch (err) {
       console.error('❌ Failed to load report:', err);

@@ -12,11 +12,13 @@ const Note = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const BASE_URL = process.env.REACT_APP_BACKEND_API;
+
   // Fetch all horses
   useEffect(() => {
     const fetchHorses = async () => {
       try {
-        const response = await axios.get('http://localhost:7002/api/horses');
+        const response = await axios.get(`${BASE_URL}/horses`);
         setHorses(response.data);
       } catch (err) {
         console.error('Error fetching horses:', err.message);
@@ -24,17 +26,17 @@ const Note = () => {
     };
 
     fetchHorses();
-  }, []);
+  }, [BASE_URL]);
 
   // Fetch notes
   useEffect(() => {
     const fetchNotes = async () => {
-      const response = await axios.get('http://localhost:7002/api/notes');
+      const response = await axios.get(`${BASE_URL}/notes`);
       setNotes(response.data);
     };
 
     fetchNotes();
-  }, []);
+  }, [BASE_URL]);
 
   const handleAddNote = async () => {
     if (!newNote.horseId || !newNote.author || !newNote.content) {
@@ -43,7 +45,7 @@ const Note = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:7002/api/notes', newNote);
+      const response = await axios.post(`${BASE_URL}/notes`, newNote);
       setNotes([...notes, response.data]);
       setShowAddModal(false);
     } catch (err) {
@@ -59,7 +61,7 @@ const Note = () => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:7002/api/notes/${editNote._id}`, editNote);
+      const response = await axios.put(`${BASE_URL}/notes/${editNote._id}`, editNote);
       setNotes(notes.map((note) => (note._id === editNote._id ? response.data : note)));
       setShowEditModal(false);
     } catch (err) {
@@ -70,7 +72,7 @@ const Note = () => {
 
   const handleDeleteNote = async (id) => {
     try {
-      await axios.delete(`http://localhost:7002/api/notes/${id}`);
+      await axios.delete(`${BASE_URL}/notes/${id}`);
       setNotes(notes.filter((note) => note._id !== id));
     } catch (err) {
       console.error('Error deleting note:', err.response?.data?.error || err.message);

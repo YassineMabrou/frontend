@@ -1,7 +1,10 @@
 import axios from "axios";
 
-// Base API URL
-const API_URL = `${process.env.BACKEND_API}`;
+// Base API URL from .env (make sure it's REACT_APP_BACKEND_API)
+const API_URL = process.env.REACT_APP_BACKEND_API;
+
+// Optional: log to ensure the URL is correctly loaded
+console.log("API_URL:", API_URL);
 
 // Create Axios instance with default configuration
 const axiosInstance = axios.create({
@@ -11,7 +14,7 @@ const axiosInstance = axios.create({
 // Axios interceptor to include Authorization header if token is present
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Retrieve token from localStorage
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,7 +25,7 @@ axiosInstance.interceptors.request.use(
 
 // Utility function to handle API errors
 const handleError = (error) => {
-  console.error("API Error:", error); // Log error for debugging
+  console.error("API Error:", error);
   throw error.response?.data || { message: error.message || "An unknown error occurred" };
 };
 
@@ -30,7 +33,7 @@ const handleError = (error) => {
 export const register = async (userData) => {
   try {
     const response = await axiosInstance.post("/auth/register", userData);
-    return response.data; // Return response data
+    return response.data;
   } catch (error) {
     handleError(error);
   }
@@ -41,11 +44,10 @@ export const login = async (credentials) => {
   try {
     const response = await axiosInstance.post("/auth/login", credentials);
     const { token } = response.data;
-    // Store the token in localStorage
     if (token) {
       localStorage.setItem("token", token);
     }
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
     handleError(error);
   }
@@ -73,7 +75,7 @@ export const fetchUserData = async () => {
 
 // Logout user
 export const logout = () => {
-  localStorage.removeItem("token"); // Clear token from localStorage
+  localStorage.removeItem("token");
 };
 
 // Dynamic data fetcher for different roles
@@ -91,7 +93,7 @@ const authService = {
   login,
   fetchAdminData,
   fetchUserData,
-  fetchRoleData, // Added role-based data fetcher
+  fetchRoleData,
   logout,
 };
 
