@@ -1,0 +1,131 @@
+.prediction-form {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* 🖤 Title in black with slight spacing */
+.prediction-form h2 {
+  font-size: 2.2rem;
+  color: #111;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+/* File input with cleaner, minimalist design */
+.prediction-form input[type="file"] {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 14px;
+  width: 100%;
+  border: 2px dashed #aaa;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.prediction-form input[type="file"]:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: #666;
+}
+
+/* Futuristic glassy button */
+.prediction-form button {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  transition: 0.3s ease;
+  margin-top: 10px;
+}
+
+.prediction-form button:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+
+.prediction-form button:active {
+  transform: scale(0.98);
+}
+
+/* Results Section */
+.prediction-form .result {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-form .result h4 {
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.prediction-form .result ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prediction-form .result li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s;
+  color: black; /* ✅ Text output is now black */
+}
+
+.prediction-form .result li:hover {
+  background-color: #f5f5f5;
+}
+
+/* Error message */
+.prediction-form .error {
+  margin-top: 20px;
+  background-color: #ffe0e0;
+  color: #d32f2f;
+  padding: 12px;
+  border-left: 5px solid #c62828;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* Loading message */
+.prediction-form p {
+  font-style: italic;
+  color: #333;
+}
+
+/* Green button style if used elsewhere */
+.button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #038e5d;
+}

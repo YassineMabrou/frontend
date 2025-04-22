@@ -30,8 +30,8 @@ const AddContact = ({ onContactAdded }) => {
 
   const handleHorseSelect = (e) => {
     const options = Array.from(e.target.selectedOptions);
-    const selectedHorseNames = options.map(opt => opt.value);
-    setFormData(prev => ({ ...prev, horses: selectedHorseNames }));
+    const selectedHorseIds = options.map(opt => opt.value); // Use ObjectIds
+    setFormData(prev => ({ ...prev, horses: selectedHorseIds }));
   };
 
   const handleSubmit = async (e) => {
@@ -73,7 +73,7 @@ const AddContact = ({ onContactAdded }) => {
           <label>Assign Horses:</label>
           <select multiple value={formData.horses} onChange={handleHorseSelect} className="multi-select">
             {allHorses.map(horse => (
-              <option key={horse._id} value={horse.name}>
+              <option key={horse._id} value={horse._id}>
                 {horse.name}
               </option>
             ))}
@@ -81,7 +81,12 @@ const AddContact = ({ onContactAdded }) => {
 
           {formData.horses.length > 0 && (
             <p className="assigned-preview">
-              Assigned: {formData.horses.join(', ')}
+              Assigned: {
+                formData.horses
+                  .map(id => allHorses.find(h => h._id === id)?.name)
+                  .filter(Boolean)
+                  .join(', ')
+              }
             </p>
           )}
 

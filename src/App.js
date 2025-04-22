@@ -8,8 +8,7 @@ import Admin from "./components/Admin";
 import Home from "./components/Home";
 import Horses from "./components/Horses/Horses";
 import Locations from "./components/Locations/Location";
-import Contacts from "./components/Contact/Contact"; // ✅ Corrected import path
-
+import Contacts from "./components/Contact/Contact";
 import Actions from "./components/Actions/Actions";
 import Mouvements from "./components/Mouvement/Mouvement";
 import Categories from "./components/Categories/Categories";
@@ -17,20 +16,10 @@ import Qualifications from "./components/Qualifications/Qualifications";
 
 import './App.css';
 
-// ProtectedRoute Component
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user } = useAuth();
-
-  // If user is not logged in, redirect to login page
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // If user role doesn't match the required role, redirect to home
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/home" replace />;
-  }
-
+  if (!user) return <Navigate to="/login" replace />;
+  if (requiredRole && user.role !== requiredRole) return <Navigate to="/home" replace />;
   return children;
 };
 
@@ -83,17 +72,23 @@ const App = () => {
         {/* Hero Section */}
         {!user && (
           <section className="hero">
-            <h2>Easy Horse Management</h2>
-            <p>A Stable Place for Your Horse Records!</p>
+            <div className="hero-overlay" />
+            <div className="hero-content">
+              <h2>Easy Horse Management</h2>
+              <p>A Stable Place for Your Horse Records!</p>
+            </div>
           </section>
         )}
 
         {/* Main Content */}
         {!user && (
-          <section className="main-content">
-            <h2>Start Keeping Accurate Horse Details Now!</h2>
+          <section className="main-content upgraded-text">
+            <h2>Why Choose Our Stable Management System?</h2>
             <p>
-              The main objective of this application is to provide a comprehensive and intuitive tool for horse management. Features should include the management of horse information, procedures performed, locations, and movements. The system must be user-friendly, secure, and enable efficient management of resources and operations within the stable.
+              Our platform helps you easily manage your horses’ details, including records of procedures, locations,
+              and movement tracking. Whether you're managing a small stable or a large equestrian center, our intuitive
+              and secure system enables you to streamline your workflow, maintain accurate documentation, and keep your team
+              in sync — all from one central dashboard.
             </p>
           </section>
         )}
@@ -123,8 +118,6 @@ const App = () => {
           <Route path="/contacts" element={<ProtectedRoute><Contacts /></ProtectedRoute>} />
           <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
           <Route path="/qualifications" element={<ProtectedRoute><Qualifications /></ProtectedRoute>} />
-
-          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
@@ -137,7 +130,6 @@ const App = () => {
   );
 };
 
-// Export the wrapped App with AuthProvider context
 export default () => (
   <AuthProvider>
     <App />

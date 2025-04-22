@@ -1,0 +1,57 @@
+/* Movement History Header */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10px 10px;
+    gap: 20px;
+  }
+  
+  .history-header h2 {
+    font-size: 2rem;
+    color: #333;
+    margin: 0;
+  }
+  
+  .csv-download-button {
+    background-color: #8d6e63;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .csv-download-button:hover {
+    background-color: #6d4c41;
+  }
+  
+  /* Table styling */
+  .transport-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white; /* ✅ White background */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .transport-table th,
+  .transport-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    color: #333;
+  }
+  
+  .transport-table th {
+    background-color: #f4f6f8;
+    font-weight: 600;
+  }
+  
+  .transport-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  

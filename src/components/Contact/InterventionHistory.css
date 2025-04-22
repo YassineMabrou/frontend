@@ -1,0 +1,96 @@
+.intervention-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    color: #000;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .error-msg {
+    color: #d9534f;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .no-data-msg {
+    color: #777;
+    text-align: center;
+    margin-top: 20px;
+    font-style: italic;
+  }
+  
+  .form-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .form-group select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 250px;
+    font-size: 16px;
+    color: #000;
+    background-color: #fff;
+  }
+  
+  .form-group button {
+    background-color: #8d6e63;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .form-group button:hover {
+    background-color: #6d4c41;
+  }
+  
+  .intervention-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .intervention-table th,
+  .intervention-table td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .intervention-table th {
+    background-color: #f4f6f8;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .intervention-table tr:hover {
+    background-color: #f1faff;
+    transition: background 0.2s ease;
+  }
+  .intervention-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #000;
+  }
+  

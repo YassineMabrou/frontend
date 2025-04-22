@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Intervention.css';
+import './InterventionHistory.css';
 
 const InterventionHistory = () => {
   const [contactId, setContactId] = useState('');

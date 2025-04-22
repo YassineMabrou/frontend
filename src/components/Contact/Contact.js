@@ -12,7 +12,7 @@ const AddIntervention = lazy(() => import('./AddIntervention'));
 const InterventionHistory = lazy(() => import('./InterventionHistory'));
 
 const Contact = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -132,20 +132,20 @@ const Contact = () => {
       default:
         return (
           <>
-            <form onSubmit={handleSearch} className="search-bar">
-              <input type="text" placeholder="Search by name" value={searchParams.name}
-                onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
-              <input type="text" placeholder="Search by role" value={searchParams.role}
-                onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
-              <input type="text" placeholder="Search by availability" value={searchParams.availability}
-                onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
-              <button type="submit" className="btn-search">🔍 Search</button>
-              <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
-            </form>
+            {user?.role === 'admin' && (
+              <form onSubmit={handleSearch} className="search-bar">
+                <input type="text" placeholder="Search by name" value={searchParams.name}
+                  onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
+                <input type="text" placeholder="Search by role" value={searchParams.role}
+                  onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
+                <input type="text" placeholder="Search by availability" value={searchParams.availability}
+                  onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
+                <button type="submit" className="btn-search">🔍 Search</button>
+                <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
+              </form>
+            )}
 
-            {contacts.length === 0 ? (
-              <p>No contacts found.</p>
-            ) : (
+            {user?.role === 'admin' && contacts.length > 0 && (
               <table className="contact-table">
                 <thead>
                   <tr>
@@ -248,7 +248,26 @@ const Contact = () => {
         <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
-            <li><button className="sidebar-item" onClick={() => setView('intervention')}>Add Intervention</button></li>
+            <li>
+              <button className="sidebar-item" onClick={() => setView('intervention')}>
+                Add Intervention
+              </button>
+            </li>
+
+            {user?.role === 'admin' && (
+              <>
+                <li>
+                  <button className="sidebar-item" onClick={() => setView('add')}>
+                    Add Contact
+                  </button>
+                </li>
+                <li>
+                  <button className="sidebar-item" onClick={() => setView('history')}>
+                    Intervention History
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
 

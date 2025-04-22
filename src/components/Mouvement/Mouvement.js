@@ -1,9 +1,9 @@
 import React, { useState, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import './Sidebar.css';
+import './Mouvement.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import './Mouvement.css';
 
 import TransportHistory from './TransportHistory';
 const Transport = lazy(() => import('./Transport'));
@@ -13,7 +13,7 @@ const Mouvements = () => {
   const [activeView, setActiveView] = useState('history');
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(prev => !prev);
   };
 
   return (
@@ -29,7 +29,7 @@ const Mouvements = () => {
         width: '100%',
       }}
     >
-      {/* Navbar with links visible for all users */}
+      {/* Navbar */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -44,17 +44,18 @@ const Mouvements = () => {
         </ul>
       </nav>
 
+      {/* Page Content */}
       <div className="page-container">
         <button className="sidebar-toggle" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
         </button>
 
-        <div className={sidebarOpen ? 'sidebar open' : 'sidebar closed'}>
+        <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
             <li>
               <button className="sidebar-item" onClick={() => setActiveView('transport')}>
-                Transporting a horse
+                Transporting a Horse
               </button>
             </li>
             <li>
@@ -66,12 +67,12 @@ const Mouvements = () => {
         </div>
 
         <div className="content">
-          {/* Lazy-loaded content for transport view */}
-          <Suspense fallback={<div>Loading...</div>}>
-            {activeView === 'transport' && <Transport />}
-          </Suspense>
+          {activeView === 'transport' && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Transport />
+            </Suspense>
+          )}
 
-          {/* Display history view */}
           {activeView === 'history' && (
             <>
               <div className="history-header">

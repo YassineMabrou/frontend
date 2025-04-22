@@ -263,7 +263,7 @@ footer {
 }
 
 .auth-button:hover {
-  background: linear-gradient(135deg, #ab47bc, #6a1b9a); /* Inverted gradient on hover */
+  background: #8d6e63; /* Inverted gradient on hover */
   transform: scale(1.05); /* Slight grow effect */
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
 }
@@ -294,4 +294,23 @@ footer {
 
 .nav-links li {
   list-style: none;
+}
+/* Upgraded main content text */
+.upgraded-text {
+  padding: 60px 40px;
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.upgraded-text h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.upgraded-text p {
+  font-size: 1.2rem;
+  color: #555;
 }

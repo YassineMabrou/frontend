@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // ✅ Access logout
+import { useAuth } from '../../context/AuthContext';
 import './Locations.css';
 
 const LOCATIONS_URL = `${process.env.REACT_APP_BACKEND_API}/lieux`;
 
 const CurrentLocation = () => {
-  const { user, logout } = useAuth(); // ✅ Access logout
-  const navigate = useNavigate(); // ✅ For redirect
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   const [allLocations, setAllLocations] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -166,11 +167,10 @@ const CurrentLocation = () => {
         <h1>📍 All Registered Locations</h1>
         {errorMessage && <p className="error">{errorMessage}</p>}
 
-        {user && user.role === 'admin' && (
-          <button className="toggle-add-btn" onClick={() => setShowAddForm(!showAddForm)}>
-            {showAddForm ? '➖ Cancel' : '➕ Add New Location'}
-          </button>
-        )}
+        {/* ✅ Now visible to all users */}
+        <button className="toggle-add-btn" onClick={() => setShowAddForm(!showAddForm)}>
+          {showAddForm ? '➖ Cancel' : '➕ Add New Location'}
+        </button>
 
         {showAddForm && (
           <div className="add-form-container">

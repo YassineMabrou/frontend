@@ -17,7 +17,6 @@ const Transport = () => {
 
   const [report, setReport] = useState([]);
 
-  // Fetch horses list
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`)
       .then((res) => setHorses(res.data))
@@ -63,8 +62,8 @@ const Transport = () => {
   };
 
   return (
-    <div className="transport-wrapper">
-      <h2>🚛 Register Transport</h2>
+    <div className="transport-component">
+<h2 className="transport-title" style={{ color: 'black' }}>🚛 Register Transport</h2>
 
       <form onSubmit={handleSubmit} className="transport-form">
         <select name="horse" value={form.horse} onChange={handleChange} required>
@@ -82,13 +81,13 @@ const Transport = () => {
         <textarea name="conditions" placeholder="Conditions" value={form.conditions} onChange={handleChange} />
         <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange} />
 
-        <button type="submit">Submit</button>
+        <button type="submit" className="submit-button">Submit</button>
       </form>
 
-      <button onClick={fetchReport}>Load Report</button>
+      <button onClick={fetchReport} className="load-report-button">📄 Load Report</button>
 
       {report.length > 0 && (
-        <table className="transport-report">
+        <table className="transport-table">
           <thead>
             <tr>
               <th>Horse</th>

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import "./home.css";
+import PredictionForm from "../components/PredictionForm"; // 👈 Import here
 
 const Home = () => {
   const { user, logout } = useContext(AuthContext);
@@ -16,8 +17,8 @@ const Home = () => {
   }
 
   const handleLogout = () => {
-    logout();               // Clear user from context
-    navigate("/");          // Redirect to landing page or login
+    logout();
+    navigate("/");
   };
 
   return (
@@ -63,6 +64,11 @@ const Home = () => {
       <div className="content">
         <h1>Welcome, {user.role}</h1>
         <p>You are logged in as <strong>{user.role}</strong>.</p>
+
+        {/* Prediction Form Integration */}
+        <div style={{ marginTop: "30px" }}>
+          <PredictionForm />
+        </div>
       </div>
     </div>
   );
