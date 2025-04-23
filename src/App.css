@@ -149,7 +149,7 @@ header h1 {
 
 /* Hero section */
 .hero {
-  background-image: url('C:\Users\MSI\my-app\src\img.png'); /* Make sure to place your image in the public folder or adjust the path */  background-size: cover;
+  background-image: url('./img.png'); /* Make sure to place your image in the public folder or adjust the path */  background-size: cover;
   background-position: center;
   color: black;
   padding: 100px 20px;
