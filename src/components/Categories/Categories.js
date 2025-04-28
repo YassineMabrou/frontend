@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useAuth } from '../../context/AuthContext'; // Adjust path as needed
 import './Categories.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons'; // Importing required icons
+import axios from 'axios';
 
 const AddHorseCategory = lazy(() => import('./AddHorseCategory'));
 const AddNoteCategory = lazy(() => import('./AddNoteCategory'));
@@ -12,21 +12,20 @@ const AssignHorseToCategory = lazy(() => import('./AssignHorseToCategory'));
 const AssignNoteToCategory = lazy(() => import('./AssignNoteToCategory'));
 
 const Categories = () => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth();  // Accessing the logged-in user and role
+  const navigate = useNavigate(); // Use navigate for redirecting after logout
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [activeView, setActiveView] = useState('list');
   const [editCategoryId, setEditCategoryId] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', criteria: '' });
+  const [userPermissions, setUserPermissions] = useState(null); // Store permissions
+  const [loading, setLoading] = useState(true); // Loading state for user data
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
+  // Fetch categories for display
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`);
@@ -35,6 +34,30 @@ const Categories = () => {
       console.error('Failed to fetch categories:', error);
     }
   };
+
+  // Fetch user permissions
+  const fetchUserPermissions = async () => {
+    if (user?.role !== 'admin') {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${user?.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserPermissions(res.data.permissions); // Save permissions
+      } catch (error) {
+        console.error('Failed to fetch user permissions:', error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(false); // Admin has immediate access
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchUserPermissions();
+  }, [user]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
@@ -66,10 +89,67 @@ const Categories = () => {
     }
   };
 
+  // Updated logout function with navigation to the home page (App.js content)
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    logout(); // Log the user out from the context
+    navigate('/'); // Redirect to the home page (App.js content or login page) after logout
   };
+
+  // Ensure there's a user (to avoid errors if user data isn't loaded yet)
+  if (!user || loading) {
+    return <div className="home-container">Loading user data...</div>;
+  }
+
+  // If the user is not an admin, check their permission for 'manage_categories'
+  if (user.role !== 'admin' && !userPermissions?.manage_categories) {
+    return (
+      <div
+        className="home-container"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/categories.png)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh',
+          width: '100%',
+        }}
+      >
+        {/* Navbar for user */}
+        <nav className="navbar">
+          <ul>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/horses">Horses</Link></li>
+            <li><Link to="/actions">Actions</Link></li>
+            <li><Link to="/mouvements">Mouvements</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/locations">Location</Link></li>
+            <li><Link to="/qualifications">Qualifications</Link></li>
+            <li><Link to="/contacts">Contact</Link></li>
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Access Denied Message */}
+        <div className="access-denied-container">
+          <h2>Access Denied</h2>
+          <p>You do not have permission to view this content.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -84,6 +164,7 @@ const Categories = () => {
         width: '100%',
       }}
     >
+      {/* Navbar for admin */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -94,26 +175,17 @@ const Categories = () => {
           <li><Link to="/locations">Location</Link></li>
           <li><Link to="/qualifications">Qualifications</Link></li>
           <li><Link to="/contacts">Contact</Link></li>
-          <li>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                cursor: "pointer"
-              }}
-            >
-              Log out
-            </button>
-          </li>
+          <li><Link to="/logout">Log out</Link></li>
         </ul>
       </nav>
 
+      {/* Page Content */}
       <div className="page-container">
-        <button className="sidebar-toggle" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
-        </button>
+        {user.role === 'admin' && (
+          <button className="sidebar-toggle" onClick={toggleSidebar}>
+            <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
+          </button>
+        )}
 
         <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
@@ -126,6 +198,7 @@ const Categories = () => {
           </ul>
         </div>
 
+        {/* Content Area */}
         <div className="content">
           <Suspense fallback={<div>Loading...</div>}>
             {activeView === 'addHorse' && <AddHorseCategory />}

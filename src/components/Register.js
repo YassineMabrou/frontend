@@ -1,37 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import auth from "../api/auth"; // Assuming auth.js handles API requests
-import "./register.css"; // Import the CSS file
+import auth from "../api/auth";
+import "./register.css";
 
 const Register = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    role: "user", // Default role is 'user'
+    role: "user", // Default role is user
   });
+
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const { username, email, password, role } = formData;
+
     try {
-      await auth.register(formData);
+      // Prepare the payload to be sent with username, email, password, and role
+      let payload = { username, email, password, role };
+
+      // Use a single API call for both user and admin registration
+      await auth.register(payload);
+
       alert("Registration successful! Please login.");
-      navigate("/"); // Redirect to login
+      navigate("/");
     } catch (err) {
-      setError(err.message || "An error occurred during registration.");
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "An error occurred during registration.";
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register-container">
       <h2>Register</h2>
+
       {error && <p className="error">{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input
@@ -43,6 +67,7 @@ const Register = () => {
             required
           />
         </div>
+
         <div className="input-container">
           <input
             type="email"
@@ -53,6 +78,7 @@ const Register = () => {
             required
           />
         </div>
+
         <div className="input-container">
           <input
             type="password"
@@ -63,6 +89,7 @@ const Register = () => {
             required
           />
         </div>
+
         <div className="role-container">
           <h5>Register as:</h5>
           <div className="input-container">
@@ -77,7 +104,10 @@ const Register = () => {
             </select>
           </div>
         </div>
-        <button type="submit">Register</button>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </button>
       </form>
     </div>
   );

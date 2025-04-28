@@ -20,6 +20,10 @@ const Contact = () => {
   const [editingContact, setEditingContact] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [view, setView] = useState('default');
+  const [manageContactPermission, setManageContactPermission] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,8 +42,36 @@ const Contact = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (user?.id) {
+      fetchUserData(user.id);
+    }
+  }, [user]);
+
+  const fetchUserData = async (userId) => {
+    if (!userId) return;
+
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
+      const userData = res.data;
+
+      if (userData?.permissions) {
+        setUserInfo(userData);
+        setManageContactPermission(userData.permissions.manage_contact);
+      } else {
+        console.error("Permissions not found in user data.");
+        setError("User permissions not found.");
+      }
+
+      setLoadingUser(false);
+      if (userData?.permissions?.manage_contact) {
+        fetchContacts();
+      }
+    } catch (err) {
+      console.error('Error fetching user info:', err);
+      setError('Failed to fetch user information.');
+      setLoadingUser(false);
+    }
+  };
 
   const fetchContacts = async () => {
     try {
@@ -47,6 +79,7 @@ const Contact = () => {
       setContacts(res.data);
     } catch (err) {
       console.error('Error fetching contacts:', err);
+      setError('Failed to fetch contacts.');
     }
   };
 
@@ -58,6 +91,7 @@ const Contact = () => {
       setContacts(res.data);
     } catch (err) {
       console.error('Search error:', err);
+      setError('Failed to search contacts.');
     }
   };
 
@@ -73,6 +107,7 @@ const Contact = () => {
       fetchContacts();
     } catch (err) {
       console.error('Error deleting contact:', err);
+      setError('Failed to delete contact.');
     }
   };
 
@@ -98,6 +133,7 @@ const Contact = () => {
       fetchContacts();
     } catch (err) {
       console.error('Error updating contact:', err);
+      setError('Failed to update contact.');
     }
   };
 
@@ -106,15 +142,41 @@ const Contact = () => {
     navigate('/');
   };
 
+  if (loadingUser) {
+    return <div className="home-container">Loading user data...</div>;
+  }
+
+  if (user.role !== "admin" && !manageContactPermission) {
+    return (
+      <div className="home-container" style={{ backgroundImage: "url('/contact.png')", backgroundSize: "cover", minHeight: "100vh" }}>
+        <nav className="navbar">
+          <ul>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/horses">Horses</Link></li>
+            <li><Link to="/actions">Actions</Link></li>
+            <li><Link to="/mouvements">Mouvements</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/locations">Location</Link></li>
+            <li><Link to="/qualifications">Qualifications</Link></li>
+            <li><Link to="/contacts">Contact</Link></li>
+            <li><button onClick={handleLogout} style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}>Log out</button></li>
+          </ul>
+        </nav>
+
+        <div className="access-denied-container">
+          <h2>Access Denied</h2>
+          <p>You do not have permission to view this content.</p>
+        </div>
+      </div>
+    );
+  }
+
   const renderMainView = () => {
     switch (view) {
       case 'add':
         return (
           <Suspense fallback={<p>Loading Add Contact Form...</p>}>
-            <AddContact onContactAdded={() => {
-              fetchContacts();
-              setView('default');
-            }} />
+            <AddContact onContactAdded={() => { fetchContacts(); setView('default'); }} />
           </Suspense>
         );
       case 'intervention':
@@ -132,20 +194,15 @@ const Contact = () => {
       default:
         return (
           <>
-            {user?.role === 'admin' && (
-              <form onSubmit={handleSearch} className="search-bar">
-                <input type="text" placeholder="Search by name" value={searchParams.name}
-                  onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
-                <input type="text" placeholder="Search by role" value={searchParams.role}
-                  onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
-                <input type="text" placeholder="Search by availability" value={searchParams.availability}
-                  onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
-                <button type="submit" className="btn-search">🔍 Search</button>
-                <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
-              </form>
-            )}
+            <form onSubmit={handleSearch} className="search-bar">
+              <input type="text" placeholder="Search by name" value={searchParams.name} onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by role" value={searchParams.role} onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by availability" value={searchParams.availability} onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
+              <button type="submit" className="btn-search">🔍 Search</button>
+              <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
+            </form>
 
-            {user?.role === 'admin' && contacts.length > 0 && (
+            {contacts.length > 0 && (
               <table className="contact-table">
                 <thead>
                   <tr>
@@ -154,6 +211,7 @@ const Contact = () => {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Availability</th>
+                    <th>Horses</th> {/* 🆕 Add Horses column */}
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -166,6 +224,11 @@ const Contact = () => {
                       <td>{contact.phone}</td>
                       <td>{contact.availability}</td>
                       <td>
+                        {contact.horses && contact.horses.length > 0
+                          ? contact.horses.map(h => h?.name).join(', ')
+                          : 'No Horses Assigned'}
+                      </td>
+                      <td>
                         <button onClick={() => startEdit(contact)} style={{ marginRight: '0.5rem' }}>✏️</button>
                         <button onClick={() => deleteContact(contact._id)} style={{ color: 'red' }}>🗑️</button>
                       </td>
@@ -174,70 +237,16 @@ const Contact = () => {
                 </tbody>
               </table>
             )}
-
-            {editingContact && showEditForm && (
-              <div style={{ marginTop: '2rem' }}>
-                <h3>Edit Contact</h3>
-                <form onSubmit={updateContact}>
-                  <input type="text" placeholder="Name" value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })} required /><br />
-                  <input type="text" placeholder="Role" value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })} required /><br />
-                  <input type="email" placeholder="Email" value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /><br />
-                  <input type="text" placeholder="Phone" value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required /><br />
-                  <input type="text" placeholder="Availability" value={formData.availability}
-                    onChange={(e) => setFormData({ ...formData, availability: e.target.value })} required /><br />
-                  <button type="submit">✅ Update</button>
-                  <button type="button" onClick={() => {
-                    setEditingContact(null);
-                    setShowEditForm(false);
-                  }}>Cancel</button>
-                </form>
-              </div>
-            )}
           </>
         );
     }
   };
 
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: "url('/contact.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        width: "100%",
-      }}
-    >
+    <div className="home-container" style={{ backgroundImage: "url('/contact.png')", backgroundSize: "cover", minHeight: "100vh" }}>
       <nav className="navbar">
-        <ul>
-          <li><Link to="/home">Home</Link></li>
-          <li><Link to="/horses">Horses</Link></li>
-          <li><Link to="/actions">Actions</Link></li>
-          <li><Link to="/mouvements">Mouvements</Link></li>
-          <li><Link to="/categories">Categories</Link></li>
-          <li><Link to="/locations">Location</Link></li>
-          <li><Link to="/qualifications">Qualifications</Link></li>
-          <li><Link to="/contacts">Contact</Link></li>
-          <li>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                cursor: "pointer"
-              }}
-            >
-              Log out
-            </button>
-          </li>
-        </ul>
+        {/* Navbar */}
+        ...
       </nav>
 
       <div className="page-container">
@@ -248,26 +257,9 @@ const Contact = () => {
         <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
-            <li>
-              <button className="sidebar-item" onClick={() => setView('intervention')}>
-                Add Intervention
-              </button>
-            </li>
-
-            {user?.role === 'admin' && (
-              <>
-                <li>
-                  <button className="sidebar-item" onClick={() => setView('add')}>
-                    Add Contact
-                  </button>
-                </li>
-                <li>
-                  <button className="sidebar-item" onClick={() => setView('history')}>
-                    Intervention History
-                  </button>
-                </li>
-              </>
-            )}
+            <li><button className="sidebar-item" onClick={() => setView('intervention')}>Add Intervention</button></li>
+            <li><button className="sidebar-item" onClick={() => setView('add')}>Add Contact</button></li>
+            <li><button className="sidebar-item" onClick={() => setView('history')}>Intervention History</button></li>
           </ul>
         </div>
 

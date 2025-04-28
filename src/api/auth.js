@@ -1,17 +1,14 @@
 import axios from "axios";
 
-// Base API URL from .env (make sure it's REACT_APP_BACKEND_API)
+// Base API URL from .env
 const API_URL = process.env.REACT_APP_BACKEND_API;
 
-// Optional: log to ensure the URL is correctly loaded
-console.log("API_URL:", API_URL);
-
-// Create Axios instance with default configuration
+// Create Axios instance
 const axiosInstance = axios.create({
   baseURL: API_URL,
 });
 
-// Axios interceptor to include Authorization header if token is present
+// Attach token if present
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -23,13 +20,17 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Utility function to handle API errors
+// Global error handler
 const handleError = (error) => {
   console.error("API Error:", error);
   throw error.response?.data || { message: error.message || "An unknown error occurred" };
 };
 
-// Register a new user
+// =========================
+// AUTH METHODS
+// =========================
+
+// Register a user
 export const register = async (userData) => {
   try {
     const response = await axiosInstance.post("/auth/register", userData);
@@ -39,13 +40,25 @@ export const register = async (userData) => {
   }
 };
 
+// Register an admin
+export const registerAdmin = async (adminData) => {
+  try {
+    const response = await axiosInstance.post("/auth/admin/register", adminData);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 // Login a user
-export const login = async (credentials) => {
+export const userLogin = async (credentials) => {
   try {
     const response = await axiosInstance.post("/auth/login", credentials);
-    const { token } = response.data;
+    const { token, user } = response.data;
     if (token) {
       localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("userId", user.id);
     }
     return response.data;
   } catch (error) {
@@ -53,47 +66,60 @@ export const login = async (credentials) => {
   }
 };
 
-// Fetch admin-specific data
+// Login an admin
+export const adminLogin = async (credentials) => {
+  try {
+    const response = await axiosInstance.post("/auth/admin/login", credentials);
+    const { token, user } = response.data;
+    if (token) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("userId", user.id);
+    }
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// Fetch Admin Data
 export const fetchAdminData = async () => {
   try {
-    const response = await axiosInstance.get("/users/admin");
+    const response = await axiosInstance.get("/admin/data");
     return response.data;
   } catch (error) {
     handleError(error);
   }
 };
 
-// Fetch user-specific data
+// Fetch User Data
 export const fetchUserData = async () => {
   try {
-    const response = await axiosInstance.get("/users/user");
+    const response = await axiosInstance.get("/users/data");
     return response.data;
   } catch (error) {
     handleError(error);
   }
 };
 
-// Logout user
+// Logout
 export const logout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("userId");
 };
 
-// Dynamic data fetcher for different roles
-export const fetchRoleData = async (role) => {
-  try {
-    const response = await axiosInstance.get(`/users/${role}`);
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-};
+// =========================
+// EXPORT SERVICE
+// =========================
 
 const authService = {
   register,
-  login,
+  registerAdmin,
+  userLogin,
+  adminLogin,
   fetchAdminData,
   fetchUserData,
-  fetchRoleData,
   logout,
 };
 
