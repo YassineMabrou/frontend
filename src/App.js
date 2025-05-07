@@ -14,7 +14,7 @@ import Mouvements from "./components/Mouvement/Mouvement";
 import Categories from "./components/Categories/Categories";
 import Qualifications from "./components/Qualifications/Qualifications";
 
-import './App.css';
+import "./App.css";
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user } = useAuth();
@@ -38,30 +38,17 @@ const App = () => {
   return (
     <Router>
       <div>
-        {/* Header */}
         {!user && (
           <header>
             <h1>Horsemanagement</h1>
             <ul className="nav-links">
               <li>
-                <button
-                  onClick={() => {
-                    setShowLogin(true);
-                    setShowRegister(false);
-                  }}
-                  className="auth-button"
-                >
+                <button onClick={() => { setShowLogin(true); setShowRegister(false); }} className="auth-button">
                   Log In
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => {
-                    setShowRegister(true);
-                    setShowLogin(false);
-                  }}
-                  className="auth-button"
-                >
+                <button onClick={() => { setShowRegister(true); setShowLogin(false); }} className="auth-button">
                   Sign Up
                 </button>
               </li>
@@ -69,7 +56,6 @@ const App = () => {
           </header>
         )}
 
-        {/* Hero Section */}
         {!user && (
           <section className="hero">
             <div className="hero-overlay" />
@@ -80,7 +66,6 @@ const App = () => {
           </section>
         )}
 
-        {/* Main Content */}
         {!user && (
           <section className="main-content upgraded-text">
             <h2>Why Choose Our Stable Management System?</h2>
@@ -93,13 +78,13 @@ const App = () => {
           </section>
         )}
 
-        {/* Login/Register Forms */}
         {showLogin && (
           <div className="auth-form">
             <Login />
             <button onClick={() => setShowLogin(false)}>Close</button>
           </div>
         )}
+
         {showRegister && (
           <div className="auth-form">
             <Register />
@@ -107,7 +92,6 @@ const App = () => {
           </div>
         )}
 
-        {/* Routes */}
         <Routes>
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/horses" element={<ProtectedRoute><Horses /></ProtectedRoute>} />
@@ -121,7 +105,6 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-        {/* Footer */}
         <footer>
           <p>&copy; 2025 Vnext Consulting | All rights reserved.</p>
         </footer>
@@ -130,8 +113,11 @@ const App = () => {
   );
 };
 
-export default () => (
+// ✅ Export with AuthProvider for CI compatibility
+const AppWithProvider = () => (
   <AuthProvider>
     <App />
   </AuthProvider>
 );
+
+export default AppWithProvider;

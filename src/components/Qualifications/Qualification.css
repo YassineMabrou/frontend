@@ -1,188 +1,187 @@
 /* === Container === */
 .home-container {
-  background-color: #8d6e63;
-  min-height: 100vh;
-  padding: 40px 40px 20px; /* top right/left bottom padding adjusted */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
-}
-
-/* === Heading & Description === */
-.content h1 {
-  color: #fff;
-  margin-bottom: 1rem;
-}
-
-.content p {
-  color: #f7f1ee;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-/* === Error Message === */
-.text-red-500 {
-  background-color: #c62828;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-weight: 500;
-  margin-bottom: 1rem;
-}
-
-/* === Add Qualification Button === */
-.add-qualification-btn {
-  background-color: #8d6e63;
-  color: white;
-  font-weight: bold;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin: 40px auto 20px; /* Top margin added to push button lower */
-  display: block; /* Center horizontally */
-  font-size: 1.1rem;
-}
-
-.add-qualification-btn:hover {
-  background-color: #6d4c41;
-  transform: scale(1.03);
-}
-
-/* === Form Styling === */
-form {
-  background-color: #fff;
-  padding: 24px;
-  border-radius: 10px;
-  border-left: 6px solid #8d6e63;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  animation: fadeInForm 0.3s ease-in-out;
-}
-
-form input,
-form select {
-  width: 60%;
-  max-width: 350px;
-  padding: 12px;
-  margin: 8px auto;
-  display: block;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fdfdfd;
-  transition: all 0.2s ease-in-out;
-}
-
-form input:focus,
-form select:focus {
-  border-color: #8d6e63;
-  box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
-  outline: none;
-}
-
-/* === Submit Button === */
-form button[type="submit"] {
-  width: 60%;
-  max-width: 420px;
-  margin: 14px auto 0;
-  background-color: #8d6e63;
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: block;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-form button[type="submit"]:hover {
-  background-color: #6d4c41;
-  transform: scale(1.02);
-}
-
-/* === Table Styles === */
-table {
-  width: 100%;
-  margin-top: 1rem;
-  border-collapse: collapse;
-  background-color: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-table th,
-table td {
-  padding: 12px 16px;
-  font-size: 0.95rem;
-  border: 1px solid #e0e0e0;
-  text-align: left;
-}
-
-table th {
-  background-color: #8d6e63;
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-table td {
-  color: #333;
-}
-
-table tbody tr:hover {
-  background-color: #f3f3f3;
-}
-
-/* === Action Buttons === */
-table button {
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  margin: 2px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-table button:hover {
-  transform: scale(1.05);
-}
-
-table button.edit-btn {
-  background-color: #6d4c41;
-  color: #fff;
-}
-
-table button.edit-btn:hover {
-  background-color: #5d4037;
-}
-
-table button.delete-btn {
-  background-color: #8d6e63;
-  color: #fff;
-}
-
-table button.delete-btn:hover {
-  background-color: #6d4c41;
-}
-
-/* === Fade In Animation === */
-@keyframes fadeInForm {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+    background-color: #8d6e63;
+    min-height: 100vh;
+    padding: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  /* === Heading & Description === */
+  .content h1 {
+    color: #fff;
+    margin-bottom: 1rem;
   }
-}
-
-/* === No Background Utility === */
+  
+  .content p {
+    color: #f7f1ee;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* === Error Message === */
+  .text-red-500 {
+    background-color: #c62828;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  /* === Add Qualification Button === */
+  button.toggle-add-btn,
+  button.add-form-toggle {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button.toggle-add-btn:hover,
+  button.add-form-toggle:hover {
+    background-color: #388e3c;
+    transform: scale(1.03);
+  }
+  
+  /* === Form Styling === */
+  form {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 10px;
+    border-left: 6px solid #8d6e63;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    animation: fadeInForm 0.3s ease-in-out;
+  }
+  
+  form input,
+  form select {
+    width: 60%;
+    max-width: 350px;
+    padding: 12px;
+    margin: 8px auto;
+    display: block;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fdfdfd;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  form input:focus,
+  form select:focus {
+    border-color: #8d6e63;
+    box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
+    outline: none;
+  }
+  
+  /* === Submit Button === */
+  form button[type="submit"] {
+    width: 60%;
+    max-width: 420px;
+    margin: 14px auto 0;
+    background-color: #8d6e63;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  form button[type="submit"]:hover {
+    background-color: #6d4c41;
+    transform: scale(1.02);
+  }
+  
+  /* === Table Styles === */
+  table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  table th,
+  table td {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #8d6e63;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+  
+  table td {
+    color: #333;
+  }
+  
+  table tbody tr:hover {
+    background-color: #f3f3f3;
+  }
+  
+  /* === Action Buttons === */
+  table button {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  table button:hover {
+    transform: scale(1.05);
+  }
+  
+  table button.edit-btn {
+    background-color: #6d4c41;
+    color: #fff;
+  }
+  
+  table button.edit-btn:hover {
+    background-color: #5d4037;
+  }
+  
+  table button.delete-btn {
+    background-color: #8d6e63;
+    color: #fff;
+  }
+  
+  table button.delete-btn:hover {
+    background-color: #6d4c41;
+  }
+  
+  /* === Fade In Animation === */
+  @keyframes fadeInForm {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* Prevent any default background styles */
 .content.no-bg {
   background-color: transparent !important;
   backdrop-filter: none !important;

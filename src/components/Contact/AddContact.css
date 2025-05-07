@@ -1,132 +1,92 @@
-/* === Main Container === */
-.add-contact-container {
-  position: fixed; /* 👈 Fix it in place */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* 👈 Perfect centering */
-  min-height: auto; /* 👈 No need for full page height anymore */
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  background-color: transparent;
-  z-index: 999; /* 👈 Stay above other elements */
-}
 
-/* === Form Box === */
-.form-box {
-  background: transparent; /* Still transparent */
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: none;
-  width: 100%;
-  animation: fadeIn 0.5s ease;
-}
-
-/* === Title === */
-.form-box h2 {
-  margin-bottom: 20px;
-  color: #4e342e;
-  font-size: 24px;
-  text-align: center;
-}
-
-/* === Form Styling === */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.contact-form input,
-.contact-form select {
-  padding: 12px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: #fafafa;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-/* Focus styles */
-.contact-form input:focus,
-.contact-form select:focus {
-  border-color: #8d6e63;
-  box-shadow: 0 0 5px rgba(141, 110, 99, 0.4);
-  outline: none;
-}
-
-/* === Label for Horse Assignment === */
-.contact-form label {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #5d4037;
-}
-
-/* Multi-select for horses */
-.multi-select {
-  min-height: 120px;
-}
-
-/* === Assigned Preview Text === */
-.assigned-preview {
-  margin-top: 10px;
-  font-size: 0.95rem;
-  color: #6d4c41;
-}
-
-/* === Button Group === */
-.button-group {
-  display: flex;
-  justify-content: center;
-}
-
-.submit-btn {
-  background-color: #8d6e63;
-  color: white;
-  font-weight: bold;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-/* Hover effect */
-.submit-btn:hover {
-  background-color: #6d4c41;
-  transform: scale(1.05);
-}
-
-/* === Success and Error Messages === */
-.success-msg {
-  margin-top: 20px;
-  padding: 12px;
-  background-color: #c8e6c9;
-  color: #2e7d32;
-  font-weight: 600;
-  border-radius: 6px;
-  text-align: center;
-}
-
-.error-msg {
-  margin-top: 20px;
-  padding: 12px;
-  background-color: #ffcdd2;
-  color: #c62828;
-  font-weight: 600;
-  border-radius: 6px;
-  text-align: center;
-}
-
-/* === Fade In Animation === */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
+  
+  .form-box {
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0px);
+  
+  .form-box h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
   }
-}
+  
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .contact-form input {
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.2s ease;
+  }
+  
+  .contact-form input:focus {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .success-msg {
+    margin-top: 1rem;
+    color: green;
+    font-weight: bold;
+  }
+  
+  .error-msg {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+  }
+  .multi-select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    height: 120px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .assigned-preview {
+    margin-top: 10px;
+    color: #333;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+  .contact-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #000;
+  }
+  

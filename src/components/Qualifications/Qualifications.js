@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext"; // ✅ Import useAuth
 import axios from "axios";
 import "./Qualification.css";
 
+// ✅ Use environment variables correctly
 const API_URL = `${process.env.REACT_APP_BACKEND_API}/qualifications`;
 const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
 const Qualifications = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth(); // ✅ Access user from context
+  const navigate = useNavigate(); // ✅ For redirection after logout
   const [qualifications, setQualifications] = useState([]);
   const [horses, setHorses] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -23,30 +24,31 @@ const Qualifications = () => {
   });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
-  const [manageQualificationPermission, setManageQualificationPermission] = useState(false);
-  const [loadingUser, setLoadingUser] = useState(true);
+  const [manageQualificationPermission, setManageQualificationPermission] = useState(false); // To track user permission
+  const [loadingUser, setLoadingUser] = useState(true); // To show loading state
 
   useEffect(() => {
     if (user?.id) {
-      fetchUserPermissions(user.id);
+      fetchUserPermissions(user.id); // Use user.id from context
     }
     fetchQualifications();
     fetchHorses();
   }, [user]);
 
+  // Fetch user permissions
   const fetchUserPermissions = async (userId) => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
       if (res.data?.permissions) {
-        setManageQualificationPermission(res.data.permissions.manage_qualification);
+        setManageQualificationPermission(res.data.permissions.manage_qualification); // Set permission based on user data
       } else {
         setError("Permissions data not available.");
       }
-      setLoadingUser(false);
+      setLoadingUser(false); // Set loading to false when permissions are fetched
     } catch (err) {
       console.error("Error fetching user permissions:", err);
       setError("Failed to fetch user permissions.");
-      setLoadingUser(false);
+      setLoadingUser(false); // In case of error, set loading to false
     }
   };
 
@@ -125,25 +127,30 @@ const Qualifications = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/"); // Redirect to home page
   };
 
+  // Ensure the user is logged in and has the correct permission
   if (loadingUser) {
     return <div className="home-container">Loading user data...</div>;
   }
 
+  // If the user is not an admin and doesn't have the required permission
   if (user.role !== "admin" && !manageQualificationPermission) {
     return (
-      <div className="home-container" style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        minHeight: "100vh",
-        width: "100%",
-      }}>
-        {/* Navbar */}
+      <div
+        className="home-container"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+          width: "100%",
+        }}
+      >
+        {/* Navbar for user */}
         <nav className="navbar">
           <ul>
             <li><Link to="/home">Home</Link></li>
@@ -154,11 +161,23 @@ const Qualifications = () => {
             <li><Link to="/locations">Location</Link></li>
             <li><Link to="/qualifications">Qualifications</Link></li>
             <li><Link to="/contacts">Contact</Link></li>
-            <li><button onClick={handleLogout} style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}>Log out</button></li>
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Log out
+              </button>
+            </li>
           </ul>
         </nav>
 
-        {/* Access Denied */}
+        {/* Access Denied Message */}
         <div className="access-denied-container">
           <h2>Access Denied</h2>
           <p>You do not have permission to view this content.</p>
@@ -168,16 +187,19 @@ const Qualifications = () => {
   }
 
   return (
-    <div className="home-container" style={{
-      backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundAttachment: "fixed",
-      minHeight: "100vh",
-      width: "100%",
-    }}>
-      {/* Navbar */}
+    <div
+      className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+        width: "100%",
+      }}
+    >
+      {/* Navbar for admin */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -188,53 +210,37 @@ const Qualifications = () => {
           <li><Link to="/locations">Location</Link></li>
           <li><Link to="/qualifications">Qualifications</Link></li>
           <li><Link to="/contacts">Contact</Link></li>
-          <li><button onClick={handleLogout} style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}>Log out</button></li>
+          <li><Link to="/logout">Log out</Link></li>
         </ul>
       </nav>
 
       {/* Page Content */}
       <div className="page-container">
+        <button className="sidebar-toggle" onClick={() => setShowForm(!showForm)}>
+          {showForm ? "Hide Form" : "Show Form"}
+        </button>
 
-        {/* Show Form */}
-        {showForm ? (
+        {/* Add Qualification Form */}
+        {showForm && (
           <div className="add-form-container">
-            <h3>{editId ? "Edit Qualification" : "New Qualification Form"}</h3>
-            <form onSubmit={handleSubmit}>
-              {['horseId', 'competitionName', 'date', 'location', 'result', 'score'].map((field) => (
-                <input
-                  key={field}
-                  name={field}
-                  value={form[field]}
-                  onChange={handleChange}
-                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                  required
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    margin: "8px 0",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    color: "black"
-                  }}
-                />
-              ))}
-              <button type="submit" className="add-qualification-btn" style={{ marginTop: "15px" }}>
-                Save Qualification
-              </button>
-            </form>
+            <h3>New Qualification Form</h3>
+            {['horseId', 'competitionName', 'date', 'location', 'result', 'score'].map((field) => (
+              <input
+                key={field}
+                name={field}
+                value={form[field]}
+                onChange={handleChange}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              />
+            ))}
+            <button onClick={handleSubmit}>Save Qualification</button>
           </div>
-        ) : (
+        )}
+
+        {/* Qualifications List */}
+        {!showForm && (
           <div>
             <h2>Qualifications List</h2>
-
-            {/* Add Qualification Button BELOW the Title */}
-            <div style={{ margin: "20px 0" }}>
-              <button className="add-qualification-btn" onClick={() => setShowForm(true)}>
-                Add Qualification
-              </button>
-            </div>
-
-            {/* Qualification Table */}
             <table>
               <thead>
                 <tr>
@@ -253,12 +259,8 @@ const Qualifications = () => {
                     <td>{qualification.location}</td>
                     <td>{qualification.result}</td>
                     <td>
-                      <button onClick={() => handleEdit(qualification)} className="edit-btn" style={{ marginRight: "5px" }}>
-                        Edit
-                      </button>
-                      <button onClick={() => handleDelete(qualification._id)} className="delete-btn">
-                        Delete
-                      </button>
+                      <button onClick={() => handleEdit(qualification)}>Edit</button>
+                      <button onClick={() => handleDelete(qualification._id)}>Delete</button>
                     </td>
                   </tr>
                 ))}
@@ -266,7 +268,6 @@ const Qualifications = () => {
             </table>
           </div>
         )}
-
       </div>
     </div>
   );

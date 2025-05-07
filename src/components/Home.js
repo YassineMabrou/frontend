@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./home.css";
 import PredictionForm from "../components/PredictionForm";
 import PermissionEditor from "../components/PermissionEditor";
-import EditForm from "../components/EditForm"; // <-- Import the EditForm
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BACKEND_API;
@@ -14,25 +13,24 @@ const Home = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [editingPermissionsUserId, setEditingPermissionsUserId] = useState(null);
-  const [editingUser, setEditingUser] = useState(null); // <-- Add editingUser state
 
   useEffect(() => {
+    const fetchAllUsers = async () => {
+      if (user?.role === "admin") {
+        try {
+          const token = localStorage.getItem("token");
+          const res = await axios.get(`${API_URL}/users`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUsers(res.data);
+        } catch (err) {
+          console.error("❌ Error fetching users:", err);
+        }
+      }
+    };
+
     fetchAllUsers();
   }, [user]);
-
-  const fetchAllUsers = async () => {
-    if (user?.role === "admin") {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(`${API_URL}/users`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsers(res.data);
-      } catch (err) {
-        console.error("❌ Error fetching users:", err);
-      }
-    }
-  };
 
   const handleLogout = () => {
     logout();
@@ -40,7 +38,8 @@ const Home = () => {
   };
 
   const handleEdit = (userToEdit) => {
-    setEditingUser(userToEdit); // Open the EditForm
+    const displayName = userToEdit.name || userToEdit.username || userToEdit.email || "Unknown";
+    alert(`Editing user: ${displayName}`);
   };
 
   const handleEditPermissions = (userId) => {
@@ -113,13 +112,17 @@ const Home = () => {
 
       {/* Main Content */}
       <div className="content">
-        <h1>Welcome, {user.name || user.username || user.email}</h1>
-        <p>You are logged in as <strong>{user.role}</strong>.</p>
+        <h1 style={{ color: "black" }}>
+          Welcome, {user.name || user.username || user.email}
+        </h1>
+        <p style={{ color: "black" }}>
+          You are logged in as <strong>{user.role}</strong>.
+        </p>
 
         {/* Admin User Table */}
         {user.role === "admin" && (
           <div className="user-list" style={styles.userList}>
-            <h2>All Users</h2>
+            <h2 style={{ color: "black" }}>All Users</h2>
             {users.length === 0 ? (
               <p>No users found.</p>
             ) : (
@@ -158,20 +161,6 @@ const Home = () => {
                 />
               </div>
             )}
-
-            {/* User Edit Form */}
-            {editingUser && (
-              <div style={{ marginTop: "20px" }}>
-                <EditForm
-                  user={editingUser}
-                  onClose={() => setEditingUser(null)}
-                  onSave={() => {
-                    setEditingUser(null);
-                    fetchAllUsers(); // Reload user list after editing
-                  }}
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -184,11 +173,10 @@ const Home = () => {
   );
 };
 
-// Updated button style to match your request
 const buttonStyle = () => ({
   marginRight: "8px",
   padding: "5px 10px",
-  backgroundColor: "#a56d43", // #a56d43 as you asked
+  backgroundColor: "#a56d43",
   color: "white",
   border: "none",
   borderRadius: "4px",
