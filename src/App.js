@@ -14,7 +14,7 @@ import Mouvements from "./components/Mouvement/Mouvement";
 import Categories from "./components/Categories/Categories";
 import Qualifications from "./components/Qualifications/Qualifications";
 
-import "./App.css";
+import './App.css';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user } = useAuth();
@@ -43,12 +43,18 @@ const App = () => {
             <h1>Horsemanagement</h1>
             <ul className="nav-links">
               <li>
-                <button onClick={() => { setShowLogin(true); setShowRegister(false); }} className="auth-button">
+                <button onClick={() => {
+                  setShowLogin(true);
+                  setShowRegister(false);
+                }} className="auth-button">
                   Log In
                 </button>
               </li>
               <li>
-                <button onClick={() => { setShowRegister(true); setShowLogin(false); }} className="auth-button">
+                <button onClick={() => {
+                  setShowRegister(true);
+                  setShowLogin(false);
+                }} className="auth-button">
                   Sign Up
                 </button>
               </li>
@@ -84,7 +90,6 @@ const App = () => {
             <button onClick={() => setShowLogin(false)}>Close</button>
           </div>
         )}
-
         {showRegister && (
           <div className="auth-form">
             <Register />
@@ -113,7 +118,7 @@ const App = () => {
   );
 };
 
-// ✅ Export with AuthProvider for CI compatibility
+// ✅ Named export to fix ESLint warning in CI builds
 const AppWithProvider = () => (
   <AuthProvider>
     <App />
