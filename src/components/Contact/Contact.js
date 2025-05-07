@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useAuth } from '../../context/AuthContext'; // Adjust path as needed
 import './Sidebar.css';
 import './Contact.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ const AddIntervention = lazy(() => import('./AddIntervention'));
 const InterventionHistory = lazy(() => import('./InterventionHistory'));
 
 const Contact = () => {
-  const { logout, user } = useAuth();
+  const { logout, user } = useAuth(); // Access logged-in user and role
   const navigate = useNavigate();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,6 +20,10 @@ const Contact = () => {
   const [editingContact, setEditingContact] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [view, setView] = useState('default');
+  const [manageContactPermission, setManageContactPermission] = useState(false); // To track user's permission
+  const [userInfo, setUserInfo] = useState(null); // To hold the fetched user info
+  const [loadingUser, setLoadingUser] = useState(true); // To track if user info is still loading
+  const [error, setError] = useState(null); // To hold any error from the API
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,15 +42,48 @@ const Contact = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (user?.id) {
+      // Fetch user info and permissions based on the user ID
+      fetchUserData(user.id);
+    }
+  }, [user]);
 
+  // Fetch user info from backend based on user.id
+  const fetchUserData = async (userId) => {
+    if (!userId) return; // Guard against undefined user._id
+
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
+      const userData = res.data;
+
+      // Check if permissions are present before accessing them
+      if (userData?.permissions) {
+        setUserInfo(userData); // Store user data
+        setManageContactPermission(userData.permissions.manage_contact); // Set permission based on user data
+      } else {
+        console.error("Permissions not found in user data.");
+        setError("User permissions not found.");
+      }
+
+      setLoadingUser(false); // Set loading state to false when the user data is fetched
+      if (userData?.permissions?.manage_contact) {
+        fetchContacts(); // Fetch contacts if the user has permission
+      }
+    } catch (err) {
+      console.error('Error fetching user info:', err);
+      setError('Failed to fetch user information.');
+      setLoadingUser(false); // In case of error, set loading to false
+    }
+  };
+
+  // Fetch contacts from the backend API
   const fetchContacts = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`);
       setContacts(res.data);
     } catch (err) {
       console.error('Error fetching contacts:', err);
+      setError('Failed to fetch contacts.');
     }
   };
 
@@ -58,6 +95,7 @@ const Contact = () => {
       setContacts(res.data);
     } catch (err) {
       console.error('Search error:', err);
+      setError('Failed to search contacts.');
     }
   };
 
@@ -73,6 +111,7 @@ const Contact = () => {
       fetchContacts();
     } catch (err) {
       console.error('Error deleting contact:', err);
+      setError('Failed to delete contact.');
     }
   };
 
@@ -98,6 +137,7 @@ const Contact = () => {
       fetchContacts();
     } catch (err) {
       console.error('Error updating contact:', err);
+      setError('Failed to update contact.');
     }
   };
 
@@ -106,6 +146,63 @@ const Contact = () => {
     navigate('/');
   };
 
+  // If no user data, show loading message
+  if (loadingUser) {
+    return <div className="home-container">Loading user data...</div>;
+  }
+
+  // If the user doesn't have permission to manage contacts, show "Access Denied"
+  if (user.role !== "admin" && !manageContactPermission) {
+    return (
+      <div
+        className="home-container"
+        style={{
+          backgroundImage: "url('/contact.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+          width: "100%",
+        }}
+      >
+        {/* Navbar for user */}
+        <nav className="navbar">
+          <ul>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/horses">Horses</Link></li>
+            <li><Link to="/actions">Actions</Link></li>
+            <li><Link to="/mouvements">Mouvements</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/locations">Location</Link></li>
+            <li><Link to="/qualifications">Qualifications</Link></li>
+            <li><Link to="/contacts">Contact</Link></li>
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "white",
+                  cursor: "pointer"
+                }}
+              >
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Access Denied Message */}
+        <div className="access-denied-container">
+          <h2>Access Denied</h2>
+          <p>You do not have permission to view this content.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render views based on selected "view" state
   const renderMainView = () => {
     switch (view) {
       case 'add':
@@ -132,20 +229,18 @@ const Contact = () => {
       default:
         return (
           <>
-            {user?.role === 'admin' && (
-              <form onSubmit={handleSearch} className="search-bar">
-                <input type="text" placeholder="Search by name" value={searchParams.name}
-                  onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
-                <input type="text" placeholder="Search by role" value={searchParams.role}
-                  onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
-                <input type="text" placeholder="Search by availability" value={searchParams.availability}
-                  onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
-                <button type="submit" className="btn-search">🔍 Search</button>
-                <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
-              </form>
-            )}
+            <form onSubmit={handleSearch} className="search-bar">
+              <input type="text" placeholder="Search by name" value={searchParams.name}
+                onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by role" value={searchParams.role}
+                onChange={(e) => setSearchParams({ ...searchParams, role: e.target.value })} className="search-input" />
+              <input type="text" placeholder="Search by availability" value={searchParams.availability}
+                onChange={(e) => setSearchParams({ ...searchParams, availability: e.target.value })} className="search-input" />
+              <button type="submit" className="btn-search">🔍 Search</button>
+              <button type="button" className="btn-reset" onClick={resetSearch}>Reset</button>
+            </form>
 
-            {user?.role === 'admin' && contacts.length > 0 && (
+            {contacts.length > 0 && (
               <table className="contact-table">
                 <thead>
                   <tr>
@@ -174,29 +269,6 @@ const Contact = () => {
                 </tbody>
               </table>
             )}
-
-            {editingContact && showEditForm && (
-              <div style={{ marginTop: '2rem' }}>
-                <h3>Edit Contact</h3>
-                <form onSubmit={updateContact}>
-                  <input type="text" placeholder="Name" value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })} required /><br />
-                  <input type="text" placeholder="Role" value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })} required /><br />
-                  <input type="email" placeholder="Email" value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /><br />
-                  <input type="text" placeholder="Phone" value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required /><br />
-                  <input type="text" placeholder="Availability" value={formData.availability}
-                    onChange={(e) => setFormData({ ...formData, availability: e.target.value })} required /><br />
-                  <button type="submit">✅ Update</button>
-                  <button type="button" onClick={() => {
-                    setEditingContact(null);
-                    setShowEditForm(false);
-                  }}>Cancel</button>
-                </form>
-              </div>
-            )}
           </>
         );
     }
@@ -210,6 +282,7 @@ const Contact = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
         minHeight: "100vh",
         width: "100%",
       }}
@@ -253,21 +326,16 @@ const Contact = () => {
                 Add Intervention
               </button>
             </li>
-
-            {user?.role === 'admin' && (
-              <>
-                <li>
-                  <button className="sidebar-item" onClick={() => setView('add')}>
-                    Add Contact
-                  </button>
-                </li>
-                <li>
-                  <button className="sidebar-item" onClick={() => setView('history')}>
-                    Intervention History
-                  </button>
-                </li>
-              </>
-            )}
+            <li>
+              <button className="sidebar-item" onClick={() => setView('add')}>
+                Add Contact
+              </button>
+            </li>
+            <li>
+              <button className="sidebar-item" onClick={() => setView('history')}>
+                Intervention History
+              </button>
+            </li>
           </ul>
         </div>
 

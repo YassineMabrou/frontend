@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import auth from "../api/auth"; // Assuming auth.js handles API requests
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext"; // Assuming your context is set up properly
+import authService from "../api/auth"; // Correct import of authService
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const { setUser } = useContext(AuthContext); // Get setUser from context
+  const [loading, setLoading] = useState(false);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -16,14 +17,31 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any previous errors
+    setError("");
+    setLoading(true);
+
+    if (!credentials.username || !credentials.password) {
+      setError("Both username and password are required.");
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await auth.login(credentials);
-      setUser(response.user); // Set the user in the context
-      navigate("/home"); // Redirect both roles to the home page
+      const response = await authService.userLogin(credentials);
+      const { token, user } = response;
+
+      setUser(user);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("userId", user.id);
+
+      navigate("/home"); // ✅ Always go to /home
     } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+      console.error("Login error:", err);
+      const msg = err?.response?.data?.message || err?.message || "Login failed. Please try again.";
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,6 +49,7 @@ const Login = () => {
     <div className="login-container">
       <h1>Login</h1>
       {error && <p className="error">{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input
@@ -42,6 +61,7 @@ const Login = () => {
             required
           />
         </div>
+
         <div className="input-container">
           <input
             type="password"
@@ -52,7 +72,10 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
     </div>
   );

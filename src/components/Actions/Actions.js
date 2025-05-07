@@ -14,14 +14,10 @@ const ActHistory = lazy(() => import('./ActHistory'));
 const Analysis = lazy(() => import('./Analysis'));
 
 const Actions = () => {
-  const { logout, user } = useAuth();
+  const { logout, user } = useAuth(); // Get the user from context
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
+  
+  const [permissions, setPermissions] = useState(null); // Store user permissions
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [horses, setHorses] = useState([]);
   const [acts, setActs] = useState([]);
@@ -31,9 +27,32 @@ const Actions = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [activeView, setActiveView] = useState('calendar');
+  
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  // Fetch user permissions
+  useEffect(() => {
+    if (user && user.role !== 'admin') { // Only fetch permissions for non-admin users
+      axios
+        .get(`${process.env.REACT_APP_BACKEND_API}/users/${user.id}`)
+        .then((response) => {
+          setPermissions(response.data.permissions); // Store the permissions
+        })
+        .catch((error) => {
+          console.error('Error fetching user permissions:', error);
+        });
+    } else {
+      // Admins always have all permissions
+      setPermissions({
+        manage_action: true, // Admins can manage everything
+      });
+    }
+  }, [user]);
 
+  // Fetch horses from the backend
   useEffect(() => {
     const fetchHorses = async () => {
       try {
@@ -46,6 +65,7 @@ const Actions = () => {
     fetchHorses();
   }, []);
 
+  // Fetch filtered acts based on selected filters
   const fetchFilteredActs = useCallback(async () => {
     try {
       const params = {};
@@ -73,6 +93,11 @@ const Actions = () => {
       fetchFilteredActs();
     }
   }, [fetchFilteredActs, activeView]);
+
+  // Check if the user has permission to manage actions
+  const hasManageActionPermission = permissions?.manage_action;
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
     <div className="home-container"
@@ -108,27 +133,33 @@ const Actions = () => {
       </nav>
 
       <div className="page-container">
-        <button className="sidebar-toggle" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
-        </button>
+        {/* Show sidebar toggle only if user has "manage_action" permission */}
+        {hasManageActionPermission && (
+          <button className="sidebar-toggle" onClick={toggleSidebar}>
+            <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
+          </button>
+        )}
 
-        <div className={sidebarOpen ? 'sidebar open' : 'sidebar closed'}>
-          <h2 className="sidebar-title">Menu</h2>
-          <ul className="sidebar-menu">
-            <li><button className="sidebar-item" onClick={() => setActiveView('add')}>Add horse to an act</button></li>
-            <li><button className="sidebar-item" onClick={() => setActiveView('Analysis')}>Health Analyses</button></li>
-            {user && user.role === "admin" && (
-              <>
-                <li><button className="sidebar-item" onClick={() => setActiveView('ActHistory')}>Acts History</button></li>
-                <li><button className="sidebar-item" onClick={() => setActiveView('calendar')}>Calendar</button></li>
-              </>
-            )}
-          </ul>
-        </div>
+        {/* Sidebar */}
+        {hasManageActionPermission && (
+          <div className={sidebarOpen ? 'sidebar open' : 'sidebar closed'}>
+            <h2 className="sidebar-title">Menu</h2>
+            <ul className="sidebar-menu">
+              <li><button className="sidebar-item" onClick={() => setActiveView('add')}>Add horse to an act</button></li>
+              <li><button className="sidebar-item" onClick={() => setActiveView('Analysis')}>Health Analyses</button></li>
+              {user && user.role === "admin" && (
+                <>
+                  <li><button className="sidebar-item" onClick={() => setActiveView('ActHistory')}>Acts History</button></li>
+                  <li><button className="sidebar-item" onClick={() => setActiveView('calendar')}>Calendar</button></li>
+                </>
+              )}
+            </ul>
+          </div>
+        )}
 
         <div className="content">
-          {/* Display calendar above other content */}
-          {activeView === 'calendar' && (
+          {/* Display calendar above other content only if user has permission */}
+          {hasManageActionPermission && activeView === 'calendar' && (
             <div className="procedure-calendar">
               <ActScheduler
                 acts={acts}
@@ -153,7 +184,7 @@ const Actions = () => {
           )}
 
           {/* View filters for calendar */}
-          {activeView === 'calendar' && (
+          {hasManageActionPermission && activeView === 'calendar' && (
             <div className="filters">
               <div className="select-type">
                 <h3>Procedure Type</h3>

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // ✅ Import useAuth
 import axios from "axios";
 import "./Qualification.css";
 
-// ✅ Use environment variables
+// ✅ Use environment variables correctly
 const API_URL = `${process.env.REACT_APP_BACKEND_API}/qualifications`;
 const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
 const Qualifications = () => {
-  const { logout } = useAuth(); // ✅ Access logout function from context
+  const { user, logout } = useAuth(); // ✅ Access user from context
   const navigate = useNavigate(); // ✅ For redirection after logout
   const [qualifications, setQualifications] = useState([]);
   const [horses, setHorses] = useState([]);
@@ -24,11 +24,33 @@ const Qualifications = () => {
   });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
+  const [manageQualificationPermission, setManageQualificationPermission] = useState(false); // To track user permission
+  const [loadingUser, setLoadingUser] = useState(true); // To show loading state
 
   useEffect(() => {
+    if (user?.id) {
+      fetchUserPermissions(user.id); // Use user.id from context
+    }
     fetchQualifications();
     fetchHorses();
-  }, []);
+  }, [user]);
+
+  // Fetch user permissions
+  const fetchUserPermissions = async (userId) => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
+      if (res.data?.permissions) {
+        setManageQualificationPermission(res.data.permissions.manage_qualification); // Set permission based on user data
+      } else {
+        setError("Permissions data not available.");
+      }
+      setLoadingUser(false); // Set loading to false when permissions are fetched
+    } catch (err) {
+      console.error("Error fetching user permissions:", err);
+      setError("Failed to fetch user permissions.");
+      setLoadingUser(false); // In case of error, set loading to false
+    }
+  };
 
   const fetchQualifications = async () => {
     try {
@@ -105,8 +127,64 @@ const Qualifications = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/"); // Redirect to home page
   };
+
+  // Ensure the user is logged in and has the correct permission
+  if (loadingUser) {
+    return <div className="home-container">Loading user data...</div>;
+  }
+
+  // If the user is not an admin and doesn't have the required permission
+  if (user.role !== "admin" && !manageQualificationPermission) {
+    return (
+      <div
+        className="home-container"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+          width: "100%",
+        }}
+      >
+        {/* Navbar for user */}
+        <nav className="navbar">
+          <ul>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/horses">Horses</Link></li>
+            <li><Link to="/actions">Actions</Link></li>
+            <li><Link to="/mouvements">Mouvements</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/locations">Location</Link></li>
+            <li><Link to="/qualifications">Qualifications</Link></li>
+            <li><Link to="/contacts">Contact</Link></li>
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Log out
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Access Denied Message */}
+        <div className="access-denied-container">
+          <h2>Access Denied</h2>
+          <p>You do not have permission to view this content.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -121,6 +199,7 @@ const Qualifications = () => {
         width: "100%",
       }}
     >
+      {/* Navbar for admin */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -129,155 +208,66 @@ const Qualifications = () => {
           <li><Link to="/mouvements">Mouvements</Link></li>
           <li><Link to="/categories">Categories</Link></li>
           <li><Link to="/locations">Location</Link></li>
-          <li><Link to="/qualification">Qualifications</Link></li>
+          <li><Link to="/qualifications">Qualifications</Link></li>
           <li><Link to="/contacts">Contact</Link></li>
-          <li>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                cursor: "pointer"
-              }}
-            >
-              Log out
-            </button>
-          </li>
+          <li><Link to="/logout">Log out</Link></li>
         </ul>
       </nav>
 
-      <div className="content no-bg" style={{ maxWidth: "1100px", margin: "2rem auto" }}>
-        <h1 className="text-2xl font-bold mb-4 text-white">Qualifications</h1>
-        <p className="mb-4 text-white">Manage qualifications related to horses or trainers.</p>
-
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        <button
-          onClick={() => {
-            setShowForm(!showForm);
-            setEditId(null);
-            setForm({
-              horseId: "",
-              competitionName: "",
-              date: "",
-              location: "",
-              result: "",
-              score: "",
-            });
-          }}
-          className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          {showForm ? "Cancel" : "Add Qualification"}
+      {/* Page Content */}
+      <div className="page-container">
+        <button className="sidebar-toggle" onClick={() => setShowForm(!showForm)}>
+          {showForm ? "Hide Form" : "Show Form"}
         </button>
 
+        {/* Add Qualification Form */}
         {showForm && (
-          <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 mb-6">
-            <select
-              name="horseId"
-              value={form.horseId}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-              required
-            >
-              <option value="">Select Horse</option>
-              {horses.map((horse) => (
-                <option key={horse._id} value={horse._id}>
-                  {horse.name}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              name="competitionName"
-              placeholder="Competition Name"
-              value={form.competitionName}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-              required
-            />
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-              required
-            />
-            <input
-              type="text"
-              name="location"
-              placeholder="Location"
-              value={form.location}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-              required
-            />
-            <input
-              type="text"
-              name="result"
-              placeholder="Result"
-              value={form.result}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-              required
-            />
-            <input
-              type="number"
-              name="score"
-              placeholder="Score (optional)"
-              value={form.score}
-              onChange={handleChange}
-              className="border p-2 w-[60%] rounded"
-            />
-            <button
-              type="submit"
-              className="bg-[#8d6e63] text-white font-bold py-2 px-6 rounded w-[60%] hover:bg-[#6d4c41]"
-            >
-              {editId ? "Update Qualification" : "Save Qualification"}
-            </button>
-          </form>
+          <div className="add-form-container">
+            <h3>New Qualification Form</h3>
+            {['horseId', 'competitionName', 'date', 'location', 'result', 'score'].map((field) => (
+              <input
+                key={field}
+                name={field}
+                value={form[field]}
+                onChange={handleChange}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              />
+            ))}
+            <button onClick={handleSubmit}>Save Qualification</button>
+          </div>
         )}
 
-        <table className="w-full border border-gray-300 text-sm bg-transparent">
-          <thead className="bg-[#8d6e63]/90 text-white">
-            <tr>
-              <th className="border px-3 py-2">Horse</th>
-              <th className="border px-3 py-2">Competition</th>
-              <th className="border px-3 py-2">Date</th>
-              <th className="border px-3 py-2">Location</th>
-              <th className="border px-3 py-2">Result</th>
-              <th className="border px-3 py-2">Score</th>
-              <th className="border px-3 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {qualifications.map((q) => (
-              <tr key={q._id}>
-                <td className="border px-3 py-1 bg-transparent">{getHorseName(q.horseId)}</td>
-                <td className="border px-3 py-1 bg-transparent">{q.competitionName}</td>
-                <td className="border px-3 py-1 bg-transparent">{new Date(q.date).toLocaleDateString()}</td>
-                <td className="border px-3 py-1 bg-transparent">{q.location}</td>
-                <td className="border px-3 py-1 bg-transparent">{q.result}</td>
-                <td className="border px-3 py-1 bg-transparent">{q.score ?? "—"}</td>
-                <td className="border px-3 py-1 text-center space-x-2 bg-transparent">
-                  <button
-                    onClick={() => handleEdit(q)}
-                    className="bg-[#6d4c41] text-white px-3 py-1 rounded hover:bg-[#5d4037]"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(q._id)}
-                    className="bg-[#6d4c41] text-white px-3 py-1 rounded hover:bg-[#5d4037]"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Qualifications List */}
+        {!showForm && (
+          <div>
+            <h2>Qualifications List</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Horse</th>
+                  <th>Competition Name</th>
+                  <th>Location</th>
+                  <th>Result</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {qualifications.map((qualification) => (
+                  <tr key={qualification._id}>
+                    <td>{getHorseName(qualification.horseId)}</td>
+                    <td>{qualification.competitionName}</td>
+                    <td>{qualification.location}</td>
+                    <td>{qualification.result}</td>
+                    <td>
+                      <button onClick={() => handleEdit(qualification)}>Edit</button>
+                      <button onClick={() => handleDelete(qualification._id)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
