@@ -19,7 +19,6 @@ const Contact = () => {
   const [contacts, setContacts] = useState([]);
   const [editingContact, setEditingContact] = useState(null);
   const [view, setView] = useState('default');
-  const [manageContactPermission, setManageContactPermission] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -47,15 +46,20 @@ const Contact = () => {
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
       const userData = res.data;
 
-      const isAdmin = userData?.role === 'admin';
-      const hasPermission = userData?.permissions?.manage_contact;
-
-      if (isAdmin || hasPermission) {
-        setManageContactPermission(true);
-        fetchContacts();
+      // Check if the user is admin or has permission
+      if (userData?.role === 'admin') {
+        // Admins have full permissions to control everything
+        setLoadingUser(false);
+        fetchContacts(); // Fetch all contacts for admins
+      } else {
+        const hasPermission = userData?.permissions?.manage_contact;
+        if (hasPermission) {
+          setLoadingUser(false);
+          fetchContacts(); // Admin or user with permission can view contacts
+        } else {
+          setLoadingUser(false);
+        }
       }
-
-      setLoadingUser(false);
     } catch (err) {
       console.error('Error fetching user info:', err);
       setLoadingUser(false);
@@ -129,7 +133,8 @@ const Contact = () => {
     return <div className="home-container">Loading user data...</div>;
   }
 
-  if (!manageContactPermission) {
+  // If the user is not an admin and doesn't have permission, restrict access
+  if (user?.role !== 'admin' && !user?.permissions?.manage_contact) {
     return (
       <div className="home-container" style={{
         backgroundImage: "url('/contact.png')",
@@ -233,17 +238,17 @@ const Contact = () => {
 
   return (
     <div
-    className="home-container"
-    style={{
-      backgroundImage: `url(${process.env.PUBLIC_URL}/contact.png)`,
-      backgroundSize: 'contain',             // ✅ Ensure the full image fits
-      backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
-      backgroundPosition: 'top center',      // ✅ Start from the top center
-      backgroundAttachment: 'scroll',        // ✅ Scrolls with content
-      minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
-      width: '100%',
-    }}
-  >
+      className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/contact.png)`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'repeat-y',
+        backgroundPosition: 'top center',
+        backgroundAttachment: 'scroll',
+        minHeight: '200vh',
+        width: '100%',
+      }}
+    >
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
