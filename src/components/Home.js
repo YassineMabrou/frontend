@@ -19,7 +19,7 @@ const Home = () => {
       if (user?.role === "admin") {
         try {
           const token = localStorage.getItem("token");
-          const res = await axios.get(`${API_URL}/users`, {
+          const res = await axios.get(`${API_URL}/Userr`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUsers(res.data);
@@ -52,7 +52,7 @@ const Home = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${API_URL}/users/${userId}`, {
+      await axios.delete(`${API_URL}/Userr/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
