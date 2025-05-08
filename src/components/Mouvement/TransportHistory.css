@@ -11,28 +11,29 @@
 .transport-history-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: transparent; /* 👈 Transparent background */
-  color: #fff; /* Adjust text color for visibility on any background */
+  background-color: white; /* Set the table's background to white */
+  color: #333; /* Adjust text color for better contrast on white background */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .transport-history-table th,
 .transport-history-table td {
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Light transparent border */
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Light transparent border */
   padding: 10px 15px;
   text-align: left;
-  background-color: rgba(0, 0, 0, 0.2); /* Optional: semi-transparent cell background */
+  background-color: white; /* Set individual cell background to white */
 }
 
 .transport-history-table th {
-  background-color: rgba(0, 0, 0, 0.4); /* Slightly darker for headers */
+  background-color: #6d4c41; /* Header background set to #6d4c41 */
+  color: white; /* Set text color to white for contrast on the dark header */
   font-weight: bold;
 }
 
 .transport-history-table tr:nth-child(even) td {
-  background-color: rgba(0, 0, 0, 0.15); /* Subtle zebra effect */
+  background-color: #f9f9f9; /* Subtle zebra effect with light gray */
 }
 
 .transport-history-table tr:hover td {
-  background-color: rgba(255, 255, 255, 0.1); /* Hover effect */
+  background-color: rgba(0, 0, 0, 0.05); /* Light hover effect for better interaction */
 }
