@@ -277,7 +277,7 @@ const Contact = () => {
         </div>
 
         <div className="content">
-          <h1>📋 Contacts Management</h1>
+          <h1> Contacts Management</h1>
           {renderMainView()}
         </div>
       </div>
