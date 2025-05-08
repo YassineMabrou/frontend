@@ -1,66 +1,67 @@
-/* Universal page wrapper for all main views */
+/* Universal Page Wrapper */
 .main-content-wrapper {
   width: 100%;
   min-height: 100vh;
-  padding-top: 80px; /* space for fixed navbar if you have one */
-  padding-bottom: 80px; /* space for footer */
+  padding-top: 0; /* No space needed for fixed navbar now */
+  padding-bottom: 80px; /* Space for footer */
   box-sizing: border-box;
+  background-color: #f4f4f4; /* Light background */
 }
 
-/* Ensure pages like Horses, Actions, etc. are full width */
-.home-container, 
+/* Ensure Pages Like Horses, Actions, etc. are Full Width */
+.home-container,
 .page-container {
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-/* Remove conflicting body styles */
+/* Remove Conflicting Body Styles */
 body {
   width: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
   flex-direction: column;
   background-color: #f4f4f4;
+  font-family: 'Roboto', sans-serif; /* Modern font for better readability */
 }
 
+/* Ensure #root Fills the Full Height */
 #root {
   width: 100%;
   height: 100%;
 }
 
-
-/* Container for the Auth Options (Login/Register buttons) */
+/* Container for Auth Options (Login/Register Buttons) */
 .auth-container {
   text-align: center;
   margin-top: 50px;
 }
 
-
-
-/* Active and Inactive button styles */
+/* Active and Inactive Button Styles */
 button.active {
   background-color: #a56d43;
 }
 
 button.inactive {
-  background-color: #ccc;
+  background-color: #ddd;
 }
 
-/* Hover effect for buttons */
+/* Hover Effect for Buttons */
 button:hover {
   background-color: #a56d43;
 }
 
-/* Heading styles */
+/* Heading Styles */
 h1 {
   font-size: 2rem;
   color: #333;
   margin-bottom: 30px;
+  font-weight: 600;
 }
 
 /* Protected Route Placeholder (for Home and Admin) */
@@ -69,128 +70,193 @@ h1 {
   text-align: center;
 }
 
-/* Form container - Align form to the left */
+/* Form Container - Align Form to the Left */
 .form-container {
   display: flex;
-  justify-content: flex-start; /* Align form to the left side */
-  align-items: flex-start; /* Align form content to the top */
+  justify-content: flex-start;
+  align-items: flex-start;
   padding: 20px;
-  width: 100%; /* Ensure full width of the container */
-  height: 100%; /* Full height of the viewport */
+  width: 100%;
+  height: 100%;
 }
 
-/* Form styling */
+/* Form Styling */
 form {
-  width: 400px;
-  padding: 1px;
+  width: 100%;
+  max-width: 450px;
+  margin: auto;
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
-/* Styling for form inputs, select, and buttons */
+/* Styling for Form Inputs, Select, and Buttons */
 form input,
 form select,
 form button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin: 10px 0;
   border-radius: 4px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
-/* Form button styling */
+/* Form Button Styling */
 form button {
-  background-color: green;
-  color: white; /* Add missing color for button text */
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Disabled button styling */
+/* Hover and Active Button Effects */
+form button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+form button:active {
+  transform: translateY(1px);
+}
+
+/* Disabled Button Styling */
 form button:disabled {
   background-color: #ccc;
+  cursor: not-allowed;
 }
 
-/* Error messages */
+/* Error Messages */
 form p {
   color: red;
   text-align: left;
 }
 
-/* Header styles */
+/* Header Styles */
 header {
   background-color: #a56d43;
-  padding: 20px;
+  padding: 10px 40px; /* Reduced padding to reduce height */
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0;
+  height: auto; /* Let the height adjust dynamically based on content */
 }
 
 header h1 {
   font-size: 2.5rem;
   margin: 0;
+  font-weight: 600;
 }
 
-/* Navigation links */
+/* Navigation Links */
 .nav-links {
   list-style: none;
   padding: 0;
+  display: flex;
+  gap: 20px;
 }
 
 .nav-links li {
   display: inline;
-  margin-right: 20px;
 }
 
 .nav-links a {
   color: white;
   text-decoration: none;
   font-size: 1rem;
+  font-weight: 500;
 }
 
-/* Hero section */
+/* Hero Section */
 .hero {
-  background-image: url('./img.png'); /* Make sure to place your image in the public folder or adjust the path */  background-size: cover;
+  background-image: url('./img.png'); /* Adjust the image path */
+  background-size: cover;
   background-position: center;
-  color: black;
-  padding: 100px 20px;
-  text-align: left;
+  color: white;
+  padding: 0;
+  min-height: 100vh; /* Full height of the screen */
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3); /* Overlay for better text visibility */
+  margin-top: 0; /* No margin at the top, starts directly under navbar */
 }
 
 .hero h2 {
-  font-size: 3rem;
+  font-size: 3.5rem;
+  font-weight: bold;
   margin-bottom: 20px;
+  color: white;
 }
 
 .hero p {
   font-size: 1.5rem;
+  font-weight: 300;
   margin-bottom: 30px;
+  color: white;
 }
 
+.hero-icon {
+  font-size: 50px; /* Adjust the icon size */
+  color: white;
+  margin-top: 20px;
+}
+
+/* CTA Button Styles */
 .cta-btn {
   background-color: #8d6e63;
   color: white;
   padding: 15px 30px;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
   border-radius: 5px;
+  font-weight: 600;
+  display: inline-block;
 }
 
-/* Main content section */
+/* CTA Button Hover Effect */
+.cta-btn:hover {
+  background-color: #6f4f37;
+  transform: scale(1.05);
+}
+
+/* Main Content Section */
 .main-content {
-  padding: 50px;
+  padding: 60px 40px;
   text-align: center;
   background-color: #f9f9f9;
+  font-size: 1.1rem;
 }
 
-/* Footer styles */
+.main-content h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.main-content p {
+  color: #555;
+  line-height: 1.7;
+}
+
+/* Footer Styles */
 footer {
   background-color: #a56d43;
   padding: 20px;
   color: white;
   text-align: center;
+  font-size: 1rem;
+  position: relative;
 }
 
-/* Fix for full page layout */
+footer p {
+  margin: 0;
+}
+
+/* Fix for Full Page Layout */
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -202,14 +268,17 @@ body {
 }
 
 main {
-  flex: 1; /* Ensures main content takes the available space */
+  flex: 1;
 }
 
 footer {
-  margin-top: auto; /* Ensures footer stays at the bottom */
+  margin-top: auto;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
-/* Positioning the auth forms in the top-right corner */
+/* Positioning the Auth Forms in the Top-Right Corner */
 .auth-form {
   position: absolute;
   top: 130px; /* Adjust the top value to move the form lower */
@@ -221,7 +290,6 @@ footer {
   z-index: 1000;
 }
 
-/* Close button styling inside the auth form */
 .auth-form button {
   background-color: #a56d43;
   color: white;
@@ -230,25 +298,21 @@ footer {
   cursor: pointer;
   border-radius: 5px;
   margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Spacing for hero section, main content, and footer */
-.hero, .main-content, footer {
-  margin-top: 80px; /* Make space for the auth forms at the top */
+.auth-form button:hover {
+  background-color: #8d6e63;
+  transform: translateY(-2px);
 }
 
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #a56d43;
-  color: white;
-  text-align: center;
-  padding: 10px;
+.auth-form button:active {
+  transform: translateY(1px);
 }
-/* Button styles for Log In and Sign Up */
+
+/* Button Styles for Log In and Sign Up */
 .auth-button {
-  background: linear-gradient(135deg, #a56d43, #a56d43); /* Gradient background */
+  background: linear-gradient(135deg, #a56d43, #a56d43);
   color: white;
   padding: 12px 30px;
   border: 2px solid #a56d43;
@@ -258,7 +322,7 @@ footer {
   text-transform: uppercase;
   cursor: pointer;
   outline: none;
-  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Shadow effect */
 }
 
@@ -274,17 +338,17 @@ footer {
 }
 
 .auth-button:focus {
-  outline: none; /* Remove the outline when focused */
+  outline: none;
   border: 2px solid #ab47bc; /* Border change on focus */
 }
 
-/* Add a smooth transition effect for background */
+/* Add a Smooth Transition Effect for Background */
 .auth-button,
 .auth-button:focus {
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-/* Button container */
+/* Button Container */
 .nav-links {
   display: flex;
   justify-content: center;
@@ -295,7 +359,8 @@ footer {
 .nav-links li {
   list-style: none;
 }
-/* Upgraded main content text */
+
+/* Upgraded Main Content Text */
 .upgraded-text {
   padding: 60px 40px;
   max-width: 900px;

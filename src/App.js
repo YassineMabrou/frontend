@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { FaHorse } from 'react-icons/fa'; // Importing the Horse icon from react-icons
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -26,6 +27,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -34,6 +36,22 @@ const App = () => {
       setShowRegister(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {  // You can adjust the threshold as needed
+        setShowFooter(true);
+      } else {
+        setShowFooter(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <Router>
@@ -66,8 +84,9 @@ const App = () => {
           <section className="hero">
             <div className="hero-overlay" />
             <div className="hero-content">
-              <h2>Easy Horse Management</h2>
-              <p>A Stable Place for Your Horse Records!</p>
+              <h2>Welcome to Professional Horse Management</h2>
+              <p>Efficiently manage your horses with our intuitive platform</p>
+              <FaHorse className="hero-icon" />
             </div>
           </section>
         )}
@@ -110,9 +129,11 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-        <footer>
-          <p>&copy; 2025 Vnext Consulting | All rights reserved.</p>
-        </footer>
+        {showFooter && (
+          <footer>
+            <p>&copy; 2025 Vnext Consulting | All rights reserved.</p>
+          </footer>
+        )}
       </div>
     </Router>
   );
