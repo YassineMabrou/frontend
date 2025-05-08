@@ -1,75 +1,41 @@
-/* Ensure containers take full height and width */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-.home-container,
-.page-container,
-.content {
-  height: 100%;
-  min-height: 100vh;
-  width: 100%;
-}
-
-/* ✅ Full-page background image with overlay */
-.content {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
-  z-index: 1;
-  padding: 2rem;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-}
-
-/* Optional: dark overlay for readability */
-.content::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: transparent;
-  z-index: 0;
-}
-
-.content > * {
-  position: relative;
-  z-index: 1;
-}
 
 /* ✅ Maintain spacing and styling for search */
 .search-bar {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: nowrap;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background for the search bar */
+  padding: 15px; /* Increased padding for better spacing */
+  border-radius: 8px;
+  box-sizing: border-box;
+  max-width: 1200px; /* Set a maximum width */
+  width: 100%;
+  margin: auto;
+  overflow: hidden; /* Prevent scrolling */
+  align-items: center;
 }
 
 .search-input {
-  padding: 8px 10px;
-  font-size: 14px;
+  padding: 12px 15px;
+  font-size: 16px; /* Slightly larger font size for better readability */
   border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 180px;
+  border-radius: 6px; /* Rounded corners for inputs */
+  width: 250px; /* Increased width */
+  height: 45px; /* Increased height */
 }
 
 .btn-search,
 .btn-reset {
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 12px 20px; /* Larger padding */
+  font-size: 16px; /* Larger font size for better readability */
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
+  height: 45px; /* Match the height of the search inputs */
 }
 
 .btn-search {
@@ -77,24 +43,16 @@ html, body {
   color: white;
 }
 
+.btn-search:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
 .btn-reset {
   background-color: #6c757d;
   color: white;
 }
 
-/* ✨ Optional responsiveness */
-@media (max-width: 768px) {
-  .search-bar {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
-  .btn-search,
-  .btn-reset {
-    width: 100%;
-  }
+.btn-reset:hover {
+  background-color: #5a6268; /* Darker grey on hover */
 }
+

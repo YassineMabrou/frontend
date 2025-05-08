@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { FaHorse } from 'react-icons/fa'; // Importing the Horse icon from react-icons
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -27,8 +26,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [showFooter, setShowFooter] = useState(false);
-  const { user } = useAuth();
+  const { user } = useAuth();  // Get user data from the context
 
   useEffect(() => {
     if (user) {
@@ -37,72 +35,49 @@ const App = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {  // You can adjust the threshold as needed
-        setShowFooter(true);
-      } else {
-        setShowFooter(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   return (
     <Router>
       <div>
+        {/* If no user, show the navbar and footer before authentication */}
         {!user && (
-          <header>
-            <h1>Horsemanagement</h1>
-            <ul className="nav-links">
-              <li>
-                <button onClick={() => {
-                  setShowLogin(true);
-                  setShowRegister(false);
-                }} className="auth-button">
-                  Log In
-                </button>
-              </li>
-              <li>
-                <button onClick={() => {
-                  setShowRegister(true);
-                  setShowLogin(false);
-                }} className="auth-button">
-                  Sign Up
-                </button>
-              </li>
-            </ul>
-          </header>
+          <>
+            <header>
+              <h1>Horsemanagement</h1>
+              <ul className="nav-links">
+                <li>
+                  <button onClick={() => { setShowLogin(true); setShowRegister(false); }} className="auth-button">
+                    Log In
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => { setShowRegister(true); setShowLogin(false); }} className="auth-button">
+                    Sign Up
+                  </button>
+                </li>
+              </ul>
+            </header>
+
+            <section className="hero">
+              <div className="hero-overlay" />
+              <div className="hero-content">
+                <h2>Easy Horse Management</h2>
+                <p>A Stable Place for Your Horse Records!</p>
+              </div>
+            </section>
+
+            <section className="main-content upgraded-text">
+              <h2>Why Choose Our Stable Management System?</h2>
+              <p>
+                Our platform helps you easily manage your horses’ details, including records of procedures, locations,
+                and movement tracking. Whether you're managing a small stable or a large equestrian center, our intuitive
+                and secure system enables you to streamline your workflow, maintain accurate documentation, and keep your team
+                in sync — all from one central dashboard.
+              </p>
+            </section>
+          </>
         )}
 
-        {!user && (
-          <section className="hero">
-            <div className="hero-overlay" />
-            <div className="hero-content">
-              <h2>Welcome to Professional Horse Management</h2>
-              <p>Efficiently manage your horses with our intuitive platform</p>
-              <FaHorse className="hero-icon" />
-            </div>
-          </section>
-        )}
-
-        {!user && (
-          <section className="main-content upgraded-text">
-            <h2>Why Choose Our Stable Management System?</h2>
-            <p>
-              Our platform helps you easily manage your horses’ details, including records of procedures, locations,
-              and movement tracking. Whether you're managing a small stable or a large equestrian center, our intuitive
-              and secure system enables you to streamline your workflow, maintain accurate documentation, and keep your team
-              in sync — all from one central dashboard.
-            </p>
-          </section>
-        )}
-
+        {/* Show login and register modal dialogs */}
         {showLogin && (
           <div className="auth-form">
             <Login />
@@ -116,6 +91,7 @@ const App = () => {
           </div>
         )}
 
+        {/* Define Routes for authenticated users */}
         <Routes>
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/horses" element={<ProtectedRoute><Horses /></ProtectedRoute>} />
@@ -129,7 +105,8 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-        {showFooter && (
+        {/* Display footer only when the user is NOT logged in */}
+        {!user && (
           <footer>
             <p>&copy; 2025 Vnext Consulting | All rights reserved.</p>
           </footer>

@@ -110,13 +110,14 @@ const Horses = () => {
       className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL}/horse1.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        minHeight: "100vh",
+        backgroundRepeat: "repeat-y",          // ✅ Repeat vertically
+        backgroundSize: "contain",             // ✅ Show full image
+        backgroundPosition: "top center",      // ✅ Align properly
+        backgroundAttachment: "scroll",        
+        minHeight: "200vh",                    
         width: "100%",
       }}
+      
     >
       <nav className="navbar">
         <ul>

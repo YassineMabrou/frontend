@@ -205,17 +205,17 @@ const CurrentLocation = () => {
 
   return (
     <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL}/location.png)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        minHeight: '100vh',
-        width: '100%',
-      }}
-    >
+        className="home-container"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/location.png)`,
+          backgroundSize: 'contain',             // ✅ Ensure the full image fits
+          backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
+          backgroundPosition: 'top center',      // ✅ Start from the top center
+          backgroundAttachment: 'scroll',        // ✅ Scrolls with content
+          minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
+          width: '100%',
+        }}
+      >
       {/* Navbar for admin or manage_location permission */}
       <nav className="navbar">
         <ul>

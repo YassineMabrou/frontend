@@ -187,3 +187,39 @@
   backdrop-filter: none !important;
   box-shadow: none !important;
 }
+/* Button styling for showing the form */
+.sidebar-toggle {
+  background-color: #3498db; /* Blue background color */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Spacing around the button text */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Show pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s ease; /* Smooth background color change */
+  margin-bottom: 20px; /* Add some space below the button */
+  display: inline-block;
+}
+
+/* Button hover effect */
+.sidebar-toggle:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* Button for hiding the form */
+.add-form-container button {
+  background-color: #2ecc71; /* Green background color */
+  color: white; /* White text */
+  padding: 10px 20px; /* Spacing */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Show pointer cursor */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s ease; /* Smooth background color change */
+  margin-top: 20px; /* Add space above the button */
+}
+
+/* Button hover effect for Save Qualification */
+.add-form-container button:hover {
+  background-color: #27ae60; /* Darker green on hover */
+}

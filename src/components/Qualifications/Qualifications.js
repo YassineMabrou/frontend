@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // ✅ Import useAuth
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'; // ✅ Import icons
 import "./Qualification.css";
 
 // ✅ Use environment variables correctly
@@ -142,12 +144,12 @@ const Qualifications = () => {
         className="home-container"
         style={{
           backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
-          minHeight: "100vh",
-          width: "100%",
+          backgroundSize: 'contain',             // ✅ Ensure the full image fits
+          backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
+          backgroundPosition: 'top center',      // ✅ Start from the top center
+          backgroundAttachment: 'scroll',        // ✅ Scrolls with content
+          minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
+          width: '100%',
         }}
       >
         {/* Navbar for user */}
@@ -217,7 +219,7 @@ const Qualifications = () => {
       {/* Page Content */}
       <div className="page-container">
         <button className="sidebar-toggle" onClick={() => setShowForm(!showForm)}>
-          {showForm ? "Hide Form" : "Show Form"}
+          <FontAwesomeIcon icon={showForm ? faTimes : faPlus} size="lg" /> {/* Toggle between plus and times icon */}
         </button>
 
         {/* Add Qualification Form */}

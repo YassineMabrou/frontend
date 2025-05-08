@@ -53,11 +53,11 @@ const Mouvements = () => {
         className="home-container"
         style={{
           backgroundImage: `url(${process.env.PUBLIC_URL}/movements.png)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-          minHeight: '100vh',
+          backgroundSize: 'contain',             // ✅ Ensure the full image fits
+          backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
+          backgroundPosition: 'top center',      // ✅ Start from the top center
+          backgroundAttachment: 'scroll',        // ✅ Scrolls with content
+          minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
           width: '100%',
         }}
       >
@@ -95,11 +95,11 @@ const Mouvements = () => {
       className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL}/movements.png)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        minHeight: '100vh',
+        backgroundSize: 'contain',             // ✅ Ensure the full image fits
+        backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
+        backgroundPosition: 'top center',      // ✅ Start from the top center
+        backgroundAttachment: 'scroll',        // ✅ Scrolls with content
+        minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
         width: '100%',
       }}
     >
@@ -138,12 +138,12 @@ const Mouvements = () => {
           <h2 className="sidebar-title">Menu</h2>
           <ul className="sidebar-menu">
             <li>
-              <button className="sidebar-item" onClick={() => setActiveView('transport')}>
+              <button onClick={() => setActiveView('transport')} className="sidebar-item">
                 Transporting a Horse
               </button>
             </li>
             <li>
-              <button className="sidebar-item" onClick={() => setActiveView('history')}>
+              <button onClick={() => setActiveView('history')} className="sidebar-item">
                 Movement History
               </button>
             </li>

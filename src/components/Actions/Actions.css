@@ -1,55 +1,50 @@
-/* Positioning the filters at the top-right, but just a little bit */
+/* General layout adjustments */
+
+/* Filters (Procedure Type, Select Horse) */
 .filters {
-  position: absolute;
-  top: 20px;
-  right: 100px; /* Moved slightly to the right (increased from 20px to 40px) */
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 20px;
-  z-index: 100; /* Ensure the filters are above other elements */
+  margin-bottom: 20px;  /* Space between filters and calendar */
+  background-color: rgba(255, 255, 255, 0.8); /* Optional: background for readability */
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;  /* Adjust width to make it fit the screen properly */
+  margin-top: 20px; /* Add some space between the navbar and filters */
 }
 
-.select-type, .select-view, .date-range {
-  width: 200px; /* Adjust this to your preferred width */
+/* Individual filter element */
+.select-type, .select-horse {
+  width: 200px;
+  flex: 1;
 }
 
-/* Reducing the width of the "Select Horse" dropdown and moving it with the filters */
-.select-horse {
-  position: absolute;
-  top: 20px;
-  right: 40px; /* Align the select horse with the filters */
-  width: 200px; /* Adjust this to your preferred width */
-}
-
+/* Select dropdown styles */
+.select-type select,
 .select-horse select {
-  width: 100%; /* Make sure the select dropdown fits the container */
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
-/* Adjusting the calendar display to be above the content */
+/* Heading inside filter */
+.filters h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Adjusting the calendar display to be below the filters */
 .procedure-calendar {
-  margin-bottom: 30px; /* Add some space below the calendar */
-}
-
-.select-type, .select-view, .date-range {
-  width: 200px; /* Adjust this to your preferred width */
-}
-
-/* Reducing the width of the "Select Horse" dropdown and moving it with the filters */
-.select-horse {
-  position: absolute;
-  top: 20px;
-  right: 20px; /* Align the select horse with the filters */
-  width: 200px; /* Adjust this to your preferred width */
-}
-
-.select-horse select {
-  width: 100%; /* Make sure the select dropdown fits the container */
-}
-
-/* Adjusting the calendar display to be above the content */
-.procedure-calendar {
-  margin-bottom: 30px; /* Add some space below the calendar */
+  width: 80%;  /* Reduce the width of the calendar */
+  margin-top: 30px; /* Space between calendar and filters */
+  margin-bottom: 30px; /* Add space below the calendar */
+  margin-left: auto;  /* Center the calendar */
+  margin-right: auto; /* Center the calendar */
+  background-color: transparent; /* Remove any white background */
+  box-shadow: none; /* Remove any box shadow if present */
 }
 
 /* Sidebar styling adjustments for better positioning */

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./home.css";
 import PredictionForm from "../components/PredictionForm";
 import PermissionEditor from "../components/PermissionEditor";
+import AddUserForm from "../components/AddUserForm";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BACKEND_API;
@@ -13,22 +14,23 @@ const Home = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [editingPermissionsUserId, setEditingPermissionsUserId] = useState(null);
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
+
+  const fetchAllUsers = async () => {
+    if (user?.role === "admin") {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API_URL}/users`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsers(res.data);
+      } catch (err) {
+        console.error("❌ Error fetching users:", err);
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchAllUsers = async () => {
-      if (user?.role === "admin") {
-        try {
-          const token = localStorage.getItem("token");
-          const res = await axios.get(`${API_URL}/Userr`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setUsers(res.data);
-        } catch (err) {
-          console.error("❌ Error fetching users:", err);
-        }
-      }
-    };
-
     fetchAllUsers();
   }, [user]);
 
@@ -52,7 +54,7 @@ const Home = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${API_URL}/Userr/${userId}`, {
+      await axios.delete(`${API_URL}/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -76,10 +78,11 @@ const Home = () => {
       className="home-container"
       style={{
         backgroundImage: "url('/horse.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
+        backgroundRepeat: "repeat-y",       // ✅ Repeat vertically
+        backgroundSize: "contain",          // ✅ Scale properly
+        backgroundPosition: "top center",
+        backgroundAttachment: "scroll",
+        minHeight: "200vh",                 // ✅ Force space for 2 stacked images
         width: "100%",
       }}
     >
@@ -119,10 +122,27 @@ const Home = () => {
           You are logged in as <strong>{user.role}</strong>.
         </p>
 
-        {/* Admin User Table */}
+        {/* Admin Panel: Users Table + Add Form */}
         {user.role === "admin" && (
           <div className="user-list" style={styles.userList}>
             <h2 style={{ color: "black" }}>All Users</h2>
+
+            <button
+              onClick={() => setShowAddUserForm((prev) => !prev)}
+              style={{ ...buttonStyle(), marginBottom: "10px" }}
+            >
+              {showAddUserForm ? "Cancel" : "Add New User"}
+            </button>
+
+            {showAddUserForm && (
+              <AddUserForm
+                onUserCreated={() => {
+                  setShowAddUserForm(false);
+                  fetchAllUsers();
+                }}
+              />
+            )}
+
             {users.length === 0 ? (
               <p>No users found.</p>
             ) : (
@@ -152,7 +172,6 @@ const Home = () => {
               </table>
             )}
 
-            {/* Permissions Editor */}
             {editingPermissionsUserId && (
               <div style={{ marginTop: "20px" }}>
                 <PermissionEditor
@@ -189,12 +208,12 @@ const styles = {
     background: "#fff",
     padding: "20px",
     borderRadius: "10px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
   },
   table: {
     width: "100%",
-    borderCollapse: "collapse"
-  }
+    borderCollapse: "collapse",
+  },
 };
 
 export default Home;

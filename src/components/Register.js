@@ -10,7 +10,6 @@ const Register = () => {
     username: "",
     email: "",
     password: "",
-    role: "user", // Default role is user
   });
 
   const [error, setError] = useState(null);
@@ -28,16 +27,15 @@ const Register = () => {
     setError(null);
     setLoading(true);
 
-    const { username, email, password, role } = formData;
+    const { username, email, password } = formData;
 
     try {
-      // Prepare the payload to be sent with username, email, password, and role
-      let payload = { username, email, password, role };
+      // Force admin role here
+      const payload = { username, email, password, role: "admin" };
 
-      // Use a single API call for both user and admin registration
       await auth.register(payload);
 
-      alert("Registration successful! Please login.");
+      alert("Admin registration successful! Please login.");
       navigate("/");
     } catch (err) {
       const msg =
@@ -52,7 +50,7 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Register</h2>
+      <h2>Register Admin</h2>
 
       {error && <p className="error">{error}</p>}
 
@@ -90,23 +88,8 @@ const Register = () => {
           />
         </div>
 
-        <div className="role-container">
-          <h5>Register as:</h5>
-          <div className="input-container">
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-        </div>
-
         <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Registering..." : "Register Admin"}
         </button>
       </form>
     </div>
