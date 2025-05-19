@@ -23,7 +23,7 @@ const Home = () => {
     if (user?.role === "admin") {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`${API_URL}/Userr`, {
+        const res = await axios.get(`${API_URL}/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data);
