@@ -59,7 +59,7 @@ const Categories = () => {
 
     // Fetch all horses' data
     try {
-      const res = await axios.get('http://localhost:7002/api/horses'); // Fetch all horses data
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`); // Fetch all horses data
       const horses = res.data;
 
       // Log the horses data to see if it's coming correctly
@@ -83,7 +83,7 @@ const Categories = () => {
     // Fetch note names by their IDs
     try {
       const noteRequests = noteIds.map((noteId) =>
-        axios.get(`http://localhost:7002/api/notes/${noteId}`).then((res) => res.data)
+        axios.get(`${process.env.REACT_APP_BACKEND_API}/notes/${noteId}`).then((res) => res.data)
       );
       const notes = await Promise.all(noteRequests);
       const noteNamesObj = notes.reduce((acc, note) => {
