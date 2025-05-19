@@ -15,8 +15,8 @@ const AssignHorseToCategory = () => {
         const catRes = await axios.get(`${process.env.REACT_APP_BACKEND_API}/categories`);
         setCategories(catRes.data);
 
-        // Fetch all horses from the API
-        const horseRes = await axios.get('http://localhost:7002/api/horses');
+        // Fetch all horses from the API using the dynamic backend URL
+        const horseRes = await axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`);
         setHorses(horseRes.data);
 
         // Debugging log: Check if the horse data is being fetched correctly
@@ -49,7 +49,7 @@ const AssignHorseToCategory = () => {
         return;
       }
 
-      // API call to assign the horse to the category
+      // API call to assign the horse to the category using the dynamic backend URL
       await axios.post(`${process.env.REACT_APP_BACKEND_API}/categories/add-horse`, {
         horseId: form.horseId,
         categoryId: form.categoryId,

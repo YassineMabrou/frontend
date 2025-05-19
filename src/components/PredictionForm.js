@@ -37,7 +37,7 @@ const PredictionForm = () => {
           }),
         }));
 
-        const response = await axios.post('http://localhost:7002/api/predict', { horses });
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_API}/predict`, { horses });
 
         const predictions = response.data.map((pred, i) => ({
           row: i + 1,
