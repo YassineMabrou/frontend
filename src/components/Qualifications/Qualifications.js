@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; // ✅ Import useAuth
+import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'; // ✅ Import icons
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import "./Qualification.css";
 
-// ✅ Use environment variables correctly
 const API_URL = `${process.env.REACT_APP_BACKEND_API}/qualifications`;
 const HORSES_API = `${process.env.REACT_APP_BACKEND_API}/horses`;
 
 const Qualifications = () => {
-  const { user, logout } = useAuth(); // ✅ Access user from context
-  const navigate = useNavigate(); // ✅ For redirection after logout
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [qualifications, setQualifications] = useState([]);
   const [horses, setHorses] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -26,31 +25,29 @@ const Qualifications = () => {
   });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
-  const [manageQualificationPermission, setManageQualificationPermission] = useState(false); // To track user permission
-  const [loadingUser, setLoadingUser] = useState(true); // To show loading state
+  const [manageQualificationPermission, setManageQualificationPermission] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      fetchUserPermissions(user.id); // Use user.id from context
-    }
+    if (user?.id) fetchUserPermissions(user.id);
     fetchQualifications();
     fetchHorses();
   }, [user]);
 
-  // Fetch user permissions
   const fetchUserPermissions = async (userId) => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users/${userId}`);
       if (res.data?.permissions) {
-        setManageQualificationPermission(res.data.permissions.manage_qualification); // Set permission based on user data
+        setManageQualificationPermission(res.data.permissions.manage_qualification);
       } else {
         setError("Permissions data not available.");
       }
-      setLoadingUser(false); // Set loading to false when permissions are fetched
+      setLoadingUser(false);
     } catch (err) {
       console.error("Error fetching user permissions:", err);
       setError("Failed to fetch user permissions.");
-      setLoadingUser(false); // In case of error, set loading to false
+      setLoadingUser(false);
     }
   };
 
@@ -84,14 +81,7 @@ const Qualifications = () => {
       } else {
         await axios.post(API_URL, form);
       }
-      setForm({
-        horseId: "",
-        competitionName: "",
-        date: "",
-        location: "",
-        result: "",
-        score: "",
-      });
+      setForm({ horseId: "", competitionName: "", date: "", location: "", result: "", score: "" });
       setEditId(null);
       setShowForm(false);
       fetchQualifications();
@@ -122,37 +112,37 @@ const Qualifications = () => {
     }
   };
 
+  // ✅ Safe version to prevent null/undefined errors
   const getHorseName = (horseId) => {
-    const found = horses.find((h) => h._id === horseId || h._id === horseId?._id);
+    if (!horseId) return "Unknown Horse";
+    const id = typeof horseId === "object" ? horseId._id : horseId;
+    if (!id) return "Unknown Horse";
+    const found = horses.find((h) => h._id === id);
     return found ? found.name : "Unknown Horse";
   };
 
   const handleLogout = () => {
-    logout();
-    navigate("/"); // Redirect to home page
+    setShowLogoutConfirm(true);
   };
 
-  // Ensure the user is logged in and has the correct permission
-  if (loadingUser) {
-    return <div className="home-container">Loading user data...</div>;
-  }
+  const confirmLogout = () => {
+    logout();
+    navigate("/");
+  };
 
-  // If the user is not an admin and doesn't have the required permission
+  if (loadingUser) return <div className="home-container">Loading user data...</div>;
+
   if (user.role !== "admin" && !manageQualificationPermission) {
     return (
-      <div
-        className="home-container"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
-          backgroundSize: 'contain',             // ✅ Ensure the full image fits
-          backgroundRepeat: 'repeat-y',          // ✅ Repeat the image vertically
-          backgroundPosition: 'top center',      // ✅ Start from the top center
-          backgroundAttachment: 'scroll',        // ✅ Scrolls with content
-          minHeight: '200vh',                    // ✅ Make the container 2x the height of the screen
-          width: '100%',
-        }}
-      >
-        {/* Navbar for user */}
+      <div className="home-container" style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'repeat-y',
+        backgroundPosition: 'top center',
+        backgroundAttachment: 'scroll',
+        minHeight: '200vh',
+        width: '100%',
+      }}>
         <nav className="navbar">
           <ul>
             <li><Link to="/home">Home</Link></li>
@@ -163,45 +153,40 @@ const Qualifications = () => {
             <li><Link to="/locations">Location</Link></li>
             <li><Link to="/qualifications">Qualifications</Link></li>
             <li><Link to="/contacts">Contact</Link></li>
-            <li>
-              <button
-                onClick={handleLogout}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "white",
-                  cursor: "pointer",
-                }}
-              >
-                Log out
-              </button>
-            </li>
+            <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>Log out</button></li>
           </ul>
         </nav>
 
-        {/* Access Denied Message */}
         <div className="access-denied-container">
           <h2>Access Denied</h2>
           <p>You do not have permission to view this content.</p>
         </div>
+
+        {showLogoutConfirm && (
+          <div className="logout-modal-overlay">
+            <div className="logout-modal">
+              <h3>Are you sure you want to log out?</h3>
+              <div className="modal-buttons">
+                <button className="confirm" onClick={confirmLogout}>Yes</button>
+                <button className="cancel" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        minHeight: "100vh",
-        width: "100%",
-      }}
-    >
-      {/* Navbar for admin */}
+    <div className="home-container" style={{
+      backgroundImage: `url(${process.env.PUBLIC_URL}/qualification.png)`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      minHeight: "100vh",
+      width: "100%",
+    }}>
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -212,21 +197,31 @@ const Qualifications = () => {
           <li><Link to="/locations">Location</Link></li>
           <li><Link to="/qualifications">Qualifications</Link></li>
           <li><Link to="/contacts">Contact</Link></li>
-          <li><Link to="/logout">Log out</Link></li>
+          <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>Log out</button></li>
         </ul>
       </nav>
 
-      {/* Page Content */}
+      {showLogoutConfirm && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal">
+            <h3>Are you sure you want to log out?</h3>
+            <div className="modal-buttons">
+              <button className="confirm" onClick={confirmLogout}>Yes</button>
+              <button className="cancel" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="page-container">
         <button className="sidebar-toggle" onClick={() => setShowForm(!showForm)}>
-          <FontAwesomeIcon icon={showForm ? faTimes : faPlus} size="lg" /> {/* Toggle between plus and times icon */}
+          <FontAwesomeIcon icon={showForm ? faTimes : faPlus} size="lg" />
         </button>
 
-        {/* Add Qualification Form */}
         {showForm && (
           <div className="add-form-container">
             <h3>New Qualification Form</h3>
-            {['horseId', 'competitionName', 'date', 'location', 'result', 'score'].map((field) => (
+            {["horseId", "competitionName", "date", "location", "result", "score"].map((field) => (
               <input
                 key={field}
                 name={field}
@@ -239,7 +234,6 @@ const Qualifications = () => {
           </div>
         )}
 
-        {/* Qualifications List */}
         {!showForm && (
           <div>
             <h2>Qualifications List</h2>

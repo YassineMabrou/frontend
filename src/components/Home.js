@@ -13,14 +13,17 @@ const Home = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
   const [editingPermissionsUserId, setEditingPermissionsUserId] = useState(null);
   const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // 🔁 New state
 
   const fetchAllUsers = async () => {
     if (user?.role === "admin") {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`${API_URL}/Userr`, {
+        const res = await axios.get(`${API_URL}/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data);
@@ -35,13 +38,46 @@ const Home = () => {
   }, [user]);
 
   const handleLogout = () => {
+    setShowLogoutConfirm(true); // 🔁 Show modal
+  };
+
+  const confirmLogout = () => {
     logout();
     navigate("/");
   };
 
   const handleEdit = (userToEdit) => {
-    const displayName = userToEdit.name || userToEdit.username || userToEdit.email || "Unknown";
-    alert(`Editing user: ${displayName}`);
+    setEditingUserId(userToEdit._id);
+    setEditFormData({
+      name: userToEdit.name || '',
+      email: userToEdit.email || '',
+      role: userToEdit.role || 'user',
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(`${API_URL}/users/${editingUserId}`, editFormData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEditingUserId(null);
+      setEditFormData({});
+      fetchAllUsers();
+    } catch (err) {
+      console.error("❌ Error saving user:", err);
+      alert("Failed to save user.");
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingUserId(null);
+    setEditFormData({});
   };
 
   const handleEditPermissions = (userId) => {
@@ -54,7 +90,7 @@ const Home = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${API_URL}/Userr/${userId}`, {
+      await axios.delete(`${API_URL}/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -78,15 +114,14 @@ const Home = () => {
       className="home-container"
       style={{
         backgroundImage: "url('/horse.png')",
-        backgroundRepeat: "repeat-y",       // ✅ Repeat vertically
-        backgroundSize: "contain",          // ✅ Scale properly
+        backgroundRepeat: "repeat-y",
+        backgroundSize: "contain",
         backgroundPosition: "top center",
         backgroundAttachment: "scroll",
-        minHeight: "200vh",                 // ✅ Force space for 2 stacked images
+        minHeight: "200vh",
         width: "100%",
       }}
     >
-      {/* Navigation Bar */}
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -100,12 +135,7 @@ const Home = () => {
           <li>
             <button
               onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                cursor: "pointer",
-              }}
+              style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}
             >
               Log out
             </button>
@@ -113,7 +143,18 @@ const Home = () => {
         </ul>
       </nav>
 
-      {/* Main Content */}
+      {showLogoutConfirm && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal">
+            <h3>Are you sure you want to log out?</h3>
+            <div className="modal-buttons">
+              <button className="confirm" onClick={confirmLogout}>Yes</button>
+              <button className="cancel" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="content">
         <h1 style={{ color: "black" }}>
           Welcome, {user.name || user.username || user.email}
@@ -122,15 +163,10 @@ const Home = () => {
           You are logged in as <strong>{user.role}</strong>.
         </p>
 
-        {/* Admin Panel: Users Table + Add Form */}
         {user.role === "admin" && (
           <div className="user-list" style={styles.userList}>
             <h2 style={{ color: "black" }}>All Users</h2>
-
-            <button
-              onClick={() => setShowAddUserForm((prev) => !prev)}
-              style={{ ...buttonStyle(), marginBottom: "10px" }}
-            >
+            <button onClick={() => setShowAddUserForm((prev) => !prev)} style={{ ...buttonStyle(), marginBottom: "10px" }}>
               {showAddUserForm ? "Cancel" : "Add New User"}
             </button>
 
@@ -149,22 +185,52 @@ const Home = () => {
               <table style={styles.table}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #ccc" }}>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th style={{ color: "black" }}>Name</th>
+                    <th style={{ color: "black" }}>Email</th>
+                    <th style={{ color: "black" }}>Role</th>
+                    <th style={{ color: "black" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((u) => (
                     <tr key={u._id} style={{ borderBottom: "1px solid #eee" }}>
-                      <td>{u.name || u.username || "Unnamed"}</td>
-                      <td>{u.email}</td>
-                      <td>{u.role || "user"}</td>
+                      <td style={{ color: "black" }}>
+                        {editingUserId === u._id ? (
+                          <input type="text" name="name" value={editFormData.name} onChange={handleInputChange} />
+                        ) : (
+                          u.name || u.username || "Unnamed"
+                        )}
+                      </td>
+                      <td style={{ color: "black" }}>
+                        {editingUserId === u._id ? (
+                          <input type="email" name="email" value={editFormData.email} onChange={handleInputChange} />
+                        ) : (
+                          u.email
+                        )}
+                      </td>
+                      <td style={{ color: "black" }}>
+                        {editingUserId === u._id ? (
+                          <select name="role" value={editFormData.role} onChange={handleInputChange}>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        ) : (
+                          u.role || "user"
+                        )}
+                      </td>
                       <td>
-                        <button onClick={() => handleEdit(u)} style={buttonStyle()}>Edit</button>
-                        <button onClick={() => handleDelete(u._id)} style={buttonStyle()}>Delete</button>
-                        <button onClick={() => handleEditPermissions(u._id)} style={buttonStyle()}>Edit Permissions</button>
+                        {editingUserId === u._id ? (
+                          <>
+                            <button onClick={handleSave} style={buttonStyle()}>Save</button>
+                            <button onClick={handleCancelEdit} style={buttonStyle()}>Cancel</button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => handleEdit(u)} style={buttonStyle()}>Edit</button>
+                            <button onClick={() => handleDelete(u._id)} style={buttonStyle()}>Delete</button>
+                            <button onClick={() => handleEditPermissions(u._id)} style={buttonStyle()}>Edit Permissions</button>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -183,7 +249,6 @@ const Home = () => {
           </div>
         )}
 
-        {/* Prediction Form */}
         <div style={{ marginTop: "30px" }}>
           <PredictionForm />
         </div>

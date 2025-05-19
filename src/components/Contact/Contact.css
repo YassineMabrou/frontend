@@ -7,11 +7,11 @@
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: nowrap;
-  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background for the search bar */
+  background-color: transparent; /* Slightly transparent background for the search bar */
   padding: 15px; /* Increased padding for better spacing */
   border-radius: 8px;
   box-sizing: border-box;
-  max-width: 1200px; /* Set a maximum width */
+  max-width: 700px; /* Set a maximum width */
   width: 100%;
   margin: auto;
   overflow: hidden; /* Prevent scrolling */
@@ -56,3 +56,36 @@
   background-color: #5a6268; /* Darker grey on hover */
 }
 
+/* Make table cell text black */
+.contact-table td,
+.contact-table th {
+  color: black !important;
+}
+
+/* Optional: Keep headers bold and slightly styled */
+.contact-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.btn-search {
+  padding: 8px 16px;
+  background-color: #5a8dee;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

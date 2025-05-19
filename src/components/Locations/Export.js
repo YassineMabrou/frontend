@@ -11,19 +11,20 @@ const ExportLieu = () => {
   const API_BASE = process.env.REACT_APP_BACKEND_API;
 
   useEffect(() => {
+    // Fetch the list of locations
     axios.get(`${API_BASE}/lieux`)
-      .then(res => setLieux(res.data))
-      .catch(err => setError('Failed to load locations: ' + err.message));
+      .then((res) => setLieux(res.data))
+      .catch((err) => setError('Failed to load locations: ' + err.message));
   }, [API_BASE]);
 
   const handleExport = async () => {
     if (!selectedLieu || !format) {
-      return alert("Please select both a location and export format.");
+      return alert('Please select both a location and export format.');
     }
 
     try {
       const link = document.createElement('a');
-      link.href = `${API_BASE}/lieux/${selectedLieu}/export?format=${format}`;
+      link.href = `${API_BASE}/lieux/${selectedLieu}/export?format=${format}`;  // API call to export in selected format
       link.setAttribute('download', `lieu_export.${format === 'excel' ? 'xlsx' : format}`);
       document.body.appendChild(link);
       link.click();

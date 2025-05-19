@@ -4,6 +4,7 @@ import './Transport.css';
 
 const Transport = () => {
   const [horses, setHorses] = useState([]);
+  const [locations, setLocations] = useState([]); // Added state for locations
   const [form, setForm] = useState({
     horse: '',
     transporter: '',
@@ -18,9 +19,15 @@ const Transport = () => {
   const [report, setReport] = useState([]);
 
   useEffect(() => {
+    // Fetch horses data
     axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`)
       .then((res) => setHorses(res.data))
       .catch((err) => console.error('❌ Error fetching horses:', err));
+
+    // Fetch locations data (from the new API endpoint)
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/lieux`)
+      .then((res) => setLocations(res.data))
+      .catch((err) => console.error('❌ Error fetching locations:', err));
   }, []);
 
   const handleChange = (e) => {
@@ -63,7 +70,7 @@ const Transport = () => {
 
   return (
     <div className="transport-component">
-<h2 className="transport-title" style={{ color: 'black' }}>🚛 Register Transport</h2>
+      <h2 className="transport-title" style={{ color: 'black' }}>🚛 Register Transport</h2>
 
       <form onSubmit={handleSubmit} className="transport-form">
         <select name="horse" value={form.horse} onChange={handleChange} required>
@@ -76,8 +83,23 @@ const Transport = () => {
         <input type="text" name="transporter" placeholder="Transporter" value={form.transporter} onChange={handleChange} required />
         <input type="datetime-local" name="departureTime" value={form.departureTime} onChange={handleChange} required />
         <input type="datetime-local" name="arrivalTime" value={form.arrivalTime} onChange={handleChange} required />
-        <input type="text" name="departureLocation" placeholder="Departure Location" value={form.departureLocation} onChange={handleChange} required />
-        <input type="text" name="arrivalLocation" placeholder="Arrival Location" value={form.arrivalLocation} onChange={handleChange} required />
+
+        {/* Departure Location Dropdown */}
+        <select name="departureLocation" value={form.departureLocation} onChange={handleChange} required>
+          <option value="">Select Departure Location</option>
+          {locations.map((location) => (
+            <option key={location._id} value={location._id}>{location.name}</option>
+          ))}
+        </select>
+
+        {/* Arrival Location Dropdown */}
+        <select name="arrivalLocation" value={form.arrivalLocation} onChange={handleChange} required>
+          <option value="">Select Arrival Location</option>
+          {locations.map((location) => (
+            <option key={location._id} value={location._id}>{location.name}</option>
+          ))}
+        </select>
+
         <textarea name="conditions" placeholder="Conditions" value={form.conditions} onChange={handleChange} />
         <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange} />
 
@@ -89,10 +111,8 @@ const Transport = () => {
       {report.length > 0 && (
         <table className="transport-table">
           <thead>
-            <tr>
+            <tr style={{ color: 'black' }}>
               <th>Horse</th>
-              <th>Breed</th>
-              <th>Owner</th>
               <th>Transporter</th>
               <th>Departure</th>
               <th>Arrival</th>
@@ -102,10 +122,8 @@ const Transport = () => {
           </thead>
           <tbody>
             {report.map((t, idx) => (
-              <tr key={idx}>
+              <tr key={idx} style={{ color: 'black' }}>
                 <td>{t.horse?.name}</td>
-                <td>{t.horse?.breed}</td>
-                <td>{t.horse?.owner}</td>
                 <td>{t.transporter}</td>
                 <td>{new Date(t.departureTime).toLocaleString()}</td>
                 <td>{new Date(t.arrivalTime).toLocaleString()}</td>

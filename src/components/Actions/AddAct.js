@@ -10,6 +10,7 @@ const CreateAct = () => {
   const [type, setType] = useState("");
   const [date, setDate] = useState("");
   const [createdBy, setCreatedBy] = useState("");
+  const [users, setUsers] = useState([]);
   const [reminderDate, setReminderDate] = useState("");
   const [recurrencePattern, setRecurrencePattern] = useState("");
   const [notificationEmail, setNotificationEmail] = useState("");
@@ -24,7 +25,18 @@ const CreateAct = () => {
         console.error("Error fetching horses:", error);
       }
     };
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/users`);
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
     fetchHorses();
+    fetchUsers();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -60,6 +72,7 @@ const CreateAct = () => {
   return (
     <div className="create-act-wrapper">
       <form onSubmit={handleSubmit}>
+        {/* Horse Selection */}
         <div>
           <label>Search & Select Horses</label>
           <input
@@ -97,6 +110,7 @@ const CreateAct = () => {
           )}
         </div>
 
+        {/* Type */}
         <div>
           <label>Type</label>
           <select value={type} onChange={(e) => setType(e.target.value)} required>
@@ -116,21 +130,33 @@ const CreateAct = () => {
           </select>
         </div>
 
+        {/* Date */}
         <div>
           <label>Date</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
         </div>
 
+        {/* Created By Dropdown */}
         <div>
-          <label>Created By (User ID)</label>
-          <input type="text" value={createdBy} onChange={(e) => setCreatedBy(e.target.value)} required />
+          <label>Created By </label>
+          <select value={createdBy} onChange={(e) => setCreatedBy(e.target.value)} required>
+            <option value="">Select a user</option>
+            {users.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.username || `User ${user._id}`}
+
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Reminder Date */}
         <div>
           <label>Reminder Date</label>
           <input type="date" value={reminderDate} onChange={(e) => setReminderDate(e.target.value)} />
         </div>
 
+        {/* Recurrence Pattern */}
         <div>
           <label>Recurrence Pattern</label>
           <select value={recurrencePattern} onChange={(e) => setRecurrencePattern(e.target.value)}>
@@ -141,11 +167,13 @@ const CreateAct = () => {
           </select>
         </div>
 
+        {/* Notification Email */}
         <div>
           <label>Notification Email</label>
           <input type="email" value={notificationEmail} onChange={(e) => setNotificationEmail(e.target.value)} />
         </div>
 
+        {/* Notification Phone Number */}
         <div>
           <label>Notification Phone Number</label>
           <input type="text" value={notificationPhoneNumber} onChange={(e) => setNotificationPhoneNumber(e.target.value)} />

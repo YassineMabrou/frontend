@@ -17,7 +17,13 @@ const ActList = () => {
     setLoading(true);
     try {
       const responseActs = await axios.get(`${BASE_URL}/acts`);
-      setActs(responseActs.data);
+      const actsData = responseActs.data.map((act) => ({
+        ...act,
+        attachments: Array.isArray(act.attachments) ? act.attachments : [],
+        comments: Array.isArray(act.comments) ? act.comments : [],
+        horses: Array.isArray(act.horses) ? act.horses : [],
+      }));
+      setActs(actsData);
 
       const responseHorses = await axios.get(`${BASE_URL}/horses`);
       const horsesData = responseHorses.data;

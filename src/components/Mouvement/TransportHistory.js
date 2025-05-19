@@ -6,7 +6,6 @@ const TransportHistory = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch transport history on mount
   useEffect(() => {
     const fetchHistory = async () => {
       setLoading(true);
@@ -32,8 +31,6 @@ const TransportHistory = () => {
           <thead>
             <tr>
               <th>Horse</th>
-              <th>Breed</th>
-              <th>Owner</th>
               <th>Transporter</th>
               <th>Departure</th>
               <th>Arrival</th>
@@ -47,8 +44,6 @@ const TransportHistory = () => {
             {history.map((entry, idx) => (
               <tr key={idx}>
                 <td>{entry.horse?.name}</td>
-                <td>{entry.horse?.breed}</td>
-                <td>{entry.horse?.owner}</td>
                 <td>{entry.transporter}</td>
                 <td>{new Date(entry.departureTime).toLocaleString()}</td>
                 <td>{new Date(entry.arrivalTime).toLocaleString()}</td>

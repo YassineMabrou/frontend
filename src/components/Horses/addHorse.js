@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './addHorse.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 const AddHorseForm = () => {
   const [horse, setHorse] = useState({
     name: '',
     coatColor: '',
-    sireNumber: '',
-    sireKey: '',
     birthDate: '',
     sex: '',
     breedCode: '',
@@ -20,27 +16,29 @@ const AddHorseForm = () => {
   });
 
   const [locations, setLocations] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createdSireKey, setCreatedSireKey] = useState(null);
 
-  // Fetch locations on mount
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BACKEND_API}/lieux`)
       .then(res => setLocations(res.data))
       .catch(err => console.error('Error fetching locations:', err));
+
+    axios.get(`${process.env.REACT_APP_BACKEND_API}/contacts`)
+      .then(res => setContacts(res.data))
+      .catch(err => console.error('Error fetching contacts:', err));
   }, []);
 
   const validateForm = () => {
-    if (
-      !horse.name || !horse.coatColor || !horse.sireNumber ||
-      !horse.birthDate || !horse.sex || !horse.breedCode || !horse.currentLocation.lieu
-    ) {
-      setError('Tous les champs sont requis.');
-      return false;
-    }
-    if (!/^\d{9}$/.test(horse.sireNumber)) {
-      setError('Le numéro SIRE doit être composé de 9 chiffres.');
-      return false;
+    const requiredFields = ['name', 'coatColor', 'birthDate', 'sex', 'breedCode', 'currentLocation.lieu', 'responsibleContacts'];
+    for (let field of requiredFields) {
+      const value = field.includes('.') ? horse.currentLocation.lieu : horse[field];
+      if (!value) {
+        setError('All fields are required.');
+        return false;
+      }
     }
     return true;
   };
@@ -48,29 +46,33 @@ const AddHorseForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setCreatedSireKey(null);
     if (!validateForm()) return;
 
     setIsSubmitting(true);
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_API}/horses/add`, horse);
-      alert('Le cheval a été ajouté avec succès');
+      const birthYear = new Date(horse.birthDate).getFullYear();
+      const payload = { ...horse, birthYear };
+
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_API}/horses/add`, payload);
+      alert('Horse added successfully!');
+
+      if (res.data?.horse?.sireKey) {
+        setCreatedSireKey(res.data.horse.sireKey);
+      }
 
       setHorse({
         name: '',
         coatColor: '',
-        sireNumber: '',
-        sireKey: '',
         birthDate: '',
         sex: '',
         breedCode: '',
         responsibleContacts: '',
-        currentLocation: {
-          lieu: ''
-        }
+        currentLocation: { lieu: '' }
       });
     } catch (err) {
       console.error(err);
-      setError('Une erreur est survenue lors de l’ajout du cheval.');
+      setError('An error occurred while adding the horse.');
     } finally {
       setIsSubmitting(false);
     }
@@ -94,52 +96,58 @@ const AddHorseForm = () => {
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
-        <h2>Ajouter un cheval</h2>
+        <h2>Add a Horse</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
+        {createdSireKey && (
+          <p style={{ color: 'green' }}>
+            Generated UELN: <strong>{createdSireKey}</strong>
+          </p>
+        )}
 
-        <label>Nom:
-          <input type="text" name="name" value={horse.name} onChange={handleChange} placeholder="Nom du cheval" />
+        <label>Name:
+          <input type="text" name="name" value={horse.name} onChange={handleChange} placeholder="Horse name" />
         </label>
 
-        <label>Robe:
+        <label>Coat Color:
           <select name="coatColor" value={horse.coatColor} onChange={handleChange}>
-            <option value="">Sélectionner la robe</option>
-            <option value="bai">Bai</option>
-            <option value="alezan">Alezan</option>
-            <option value="gris">Gris</option>
-            <option value="noir">Noir</option>
-            <option value="autre">Autre</option>
+            <option value="">Select coat color</option>
+            <option value="bai">Bay</option>
+            <option value="alezan">Chestnut</option>
+            <option value="gris">Gray</option>
+            <option value="noir">Black</option>
+            <option value="autre">Other</option>
           </select>
         </label>
 
-        <label>Numéro SIRE:
-          <input type="text" name="sireNumber" value={horse.sireNumber} onChange={handleChange} placeholder="Numéro SIRE (9 chiffres)" />
-        </label>
-
-        <label>Date de naissance:
+        <label>Birth Date:
           <input type="date" name="birthDate" value={horse.birthDate} onChange={handleChange} />
         </label>
 
-        <label>Sexe:
+        <label>Sex:
           <select name="sex" value={horse.sex} onChange={handleChange}>
-            <option value="">Sélectionner le sexe</option>
-            <option value="mâle">Mâle</option>
-            <option value="femelle">Femelle</option>
-            <option value="hongre">Hongre</option>
+            <option value="">Select sex</option>
+            <option value="mâle">Male</option>
+            <option value="femelle">Female</option>
+            <option value="hongre">Gelding</option>
           </select>
         </label>
 
-        <label>Code race:
-          <input type="text" name="breedCode" value={horse.breedCode} onChange={handleChange} placeholder="Code race" />
+        <label>Breed Code:
+          <input type="text" name="breedCode" value={horse.breedCode} onChange={handleChange} placeholder="Breed code" />
         </label>
 
-        <label>Contacts responsables:
-          <input type="text" name="responsibleContacts" value={horse.responsibleContacts} onChange={handleChange} placeholder="Contacts responsables" />
+        <label>Responsible Contact:
+          <select name="responsibleContacts" value={horse.responsibleContacts} onChange={handleChange}>
+            <option value="">Select a contact</option>
+            {contacts.map(contact => (
+              <option key={contact._id} value={contact._id}>{contact.name}</option>
+            ))}
+          </select>
         </label>
 
-        <label>Lieu actuel:
+        <label>Current Location:
           <select name="lieu" value={horse.currentLocation.lieu} onChange={handleChange} required>
-            <option value="">Sélectionner un lieu</option>
+            <option value="">Select a location</option>
             {locations.map(loc => (
               <option key={loc._id} value={loc._id}>{loc.name}</option>
             ))}
@@ -147,7 +155,7 @@ const AddHorseForm = () => {
         </label>
 
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Enregistrement en cours...' : 'Ajouter le cheval'}
+          {isSubmitting ? 'Submitting...' : 'Add Horse'}
         </button>
       </form>
     </div>

@@ -1,6 +1,5 @@
-// src/components/AddUser.js
 import React, { useState } from "react";
-import auth from "../api/auth"; // Adjust path to your API service
+import auth from "../api/auth";  // Ensure this is correct
 
 const AddUser = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +25,8 @@ const AddUser = () => {
     setSuccess(null);
 
     try {
-      await auth.register(formData); // You can rename to `createUser` if preferred
+      // Use auth.register to create the user
+      await auth.register(formData);  // Calling the register method from auth
       setSuccess("User created successfully!");
       setFormData({ username: "", email: "", password: "", role: "user" });
     } catch (err) {

@@ -30,20 +30,19 @@ const PredictionForm = () => {
       setLoading(true);
 
       try {
-        const predictions = await Promise.all(
-          sheet.map(async (row, i) => {
-            const features = Object.values(row).map((value) => {
-              const num = parseFloat(value);
-              return isNaN(num) ? value : num;
-            });
+        const horses = sheet.map((row) => ({
+          features: Object.values(row).map((value) => {
+            const num = parseFloat(value);
+            return isNaN(num) ? value : num;
+          }),
+        }));
 
-            const res = await axios.post('http://localhost:7002/predict', {
-              features,
-            });
+        const response = await axios.post('http://localhost:7002/api/predict', { horses });
 
-            return { row: i + 1, prediction: res.data };
-          })
-        );
+        const predictions = response.data.map((pred, i) => ({
+          row: i + 1,
+          prediction: pred,
+        }));
 
         setResults(predictions);
       } catch (err) {

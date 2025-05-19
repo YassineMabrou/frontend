@@ -33,6 +33,7 @@ const Horses = () => {
   const [horseData, setHorseData] = useState([]);
   const [isUnauthorized, setIsUnauthorized] = useState(false);
   const [permissions, setPermissions] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // ✅ Added for logout modal
 
   useEffect(() => {
     if (user && !permissions) {
@@ -60,6 +61,10 @@ const Horses = () => {
   };
 
   const handleLogout = () => {
+    setShowLogoutConfirm(true); // ✅ Show modal instead of immediate logout
+  };
+
+  const confirmLogout = () => {
     logout();
     navigate("/");
   };
@@ -102,7 +107,6 @@ const Horses = () => {
     }
   };
 
-  // Updated permission check: allow admin automatically
   const hasManageHorsePermission = user?.role === "admin" || permissions?.manage_horse;
 
   return (
@@ -110,14 +114,13 @@ const Horses = () => {
       className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL}/horse1.png)`,
-        backgroundRepeat: "repeat-y",          // ✅ Repeat vertically
-        backgroundSize: "contain",             // ✅ Show full image
-        backgroundPosition: "top center",      // ✅ Align properly
-        backgroundAttachment: "scroll",        
-        minHeight: "200vh",                    
+        backgroundRepeat: "repeat-y",
+        backgroundSize: "contain",
+        backgroundPosition: "top center",
+        backgroundAttachment: "scroll",
+        minHeight: "200vh",
         width: "100%",
       }}
-      
     >
       <nav className="navbar">
         <ul>
@@ -224,6 +227,19 @@ const Horses = () => {
           <div className="no-access-message">You do not have permission to access horses data.</div>
         )}
       </div>
+
+      {/* ✅ Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal">
+            <h3>Are you sure you want to log out?</h3>
+            <div className="modal-buttons">
+              <button className="confirm" onClick={confirmLogout}>Yes</button>
+              <button className="cancel" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

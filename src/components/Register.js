@@ -50,7 +50,7 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Register Admin</h2>
+      <h2>Admin Registration</h2>
 
       {error && <p className="error">{error}</p>}
 

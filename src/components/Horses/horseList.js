@@ -13,6 +13,7 @@ const HorseList = () => {
     name: "",
     coatColor: "",
     sireNumber: "",
+    sireKey: "", // NEW: search by UELN
     archived: "",
   });
   const [error, setError] = useState(null);
@@ -109,6 +110,7 @@ const HorseList = () => {
             <p><strong>Name:</strong> ${horse.name}</p>
             <p><strong>Coat Color:</strong> ${horse.coatColor}</p>
             <p><strong>Sire Number:</strong> ${horse.sireNumber}</p>
+            <p><strong>Sire Key(UELN):</strong> ${horse.sireKey}</p>
             <p><strong>Sex:</strong> ${horse.sex}</p>
             <p><strong>Breed Code:</strong> ${horse.breedCode}</p>
             <p><strong>Birth Date:</strong> ${horse.birthDate}</p>
@@ -153,6 +155,7 @@ const HorseList = () => {
         <input type="text" name="name" placeholder="Search by name" onChange={handleChange} />
         <input type="text" name="coatColor" placeholder="Search by coat color" onChange={handleChange} />
         <input type="text" name="sireNumber" placeholder="Search by sire number" onChange={handleChange} />
+        <input type="text" name="sireKey" placeholder="Search by UELN" onChange={handleChange} />
         <select name="archived" onChange={handleChange}>
           <option value="">Show All</option>
           <option value="true">Archived</option>
@@ -171,6 +174,7 @@ const HorseList = () => {
                 <th>Name</th>
                 <th>Coat Color</th>
                 <th>Sire Number</th>
+                <th>Sire Key (UELN)</th>
                 <th>Archived</th>
                 <th>Actions</th>
               </tr>
@@ -182,6 +186,7 @@ const HorseList = () => {
                     <td>{horse.name}</td>
                     <td>{horse.coatColor}</td>
                     <td>{horse.sireNumber}</td>
+                    <td>{horse.sireKey}</td>
                     <td>{horse.archived ? "Yes" : "No"}</td>
                     <td>
                       {!horse.archived && (
@@ -206,7 +211,7 @@ const HorseList = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5">No horses found</td>
+                  <td colSpan="6">No horses found</td>
                 </tr>
               )}
             </tbody>

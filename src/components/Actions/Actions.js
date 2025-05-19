@@ -7,99 +7,71 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
-// Lazy-loaded components
 const AddAct = lazy(() => import('./AddAct'));
 const ActScheduler = lazy(() => import('./CalendarActScheduler'));
 const ActHistory = lazy(() => import('./ActHistory'));
 const Analysis = lazy(() => import('./Analysis'));
 
 const Actions = () => {
-  const { logout, user } = useAuth(); // Get the user from context
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
-  
-  const [permissions, setPermissions] = useState(null); // Store user permissions
+
+  const [permissions, setPermissions] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [horses, setHorses] = useState([]);
   const [acts, setActs] = useState([]);
-  const [selectedHorse, setSelectedHorse] = useState('');
-  const [selectedType, setSelectedType] = useState('');
   const [activeView, setActiveView] = useState('calendar');
-  
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // ✅ Added state
+
   const handleLogout = () => {
+    setShowLogoutConfirm(true); // ✅ Show modal
+  };
+
+  const confirmLogout = () => {
     logout();
     navigate("/");
   };
 
-  // Fetch user permissions
   useEffect(() => {
-    if (user && user.role !== 'admin') { // Only fetch permissions for non-admin users
+    if (user && user.role !== 'admin') {
       axios
         .get(`${process.env.REACT_APP_BACKEND_API}/users/${user.id}`)
-        .then((response) => {
-          setPermissions(response.data.permissions); // Store the permissions
-        })
-        .catch((error) => {
-          console.error('Error fetching user permissions:', error);
-        });
+        .then((response) => setPermissions(response.data.permissions))
+        .catch((error) => console.error('Error fetching user permissions:', error));
     } else {
-      // Admins always have all permissions
-      setPermissions({
-        manage_action: true, // Admins can manage everything
-      });
+      setPermissions({ manage_action: true });
     }
   }, [user]);
 
-  // Fetch horses from the backend
-  useEffect(() => {
-    const fetchHorses = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/horses`);
-        setHorses(response.data);
-      } catch (error) {
-        console.error('Error fetching horses:', error);
-      }
-    };
-    fetchHorses();
-  }, []);
-
-  // Fetch filtered acts based on selected filters
-  const fetchFilteredActs = useCallback(async () => {
+  const fetchActs = useCallback(async () => {
     try {
-      const params = {};
-      if (selectedType) params.type = selectedType;
-      if (selectedHorse) params.horse = selectedHorse;
-
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/acts/filter`, { params });
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API}/acts`);
       setActs(response.data);
     } catch (error) {
       console.error('Error fetching acts:', error);
     }
-  }, [selectedType, selectedHorse]);
+  }, []);
 
   useEffect(() => {
     if (activeView === 'calendar') {
-      fetchFilteredActs();
+      fetchActs();
     }
-  }, [fetchFilteredActs, activeView]);
+  }, [fetchActs, activeView]);
 
-  // Check if the user has permission to manage actions
   const hasManageActionPermission = permissions?.manage_action;
 
   return (
     <div
-    className="home-container"
-    style={{
-      backgroundImage: `url(${process.env.PUBLIC_URL}/actions.png)`,
-      backgroundRepeat: "repeat-y",          // ✅ Repeat vertically
-      backgroundSize: "contain",             // ✅ Show full image
-      backgroundPosition: "top center",      // ✅ Align properly
-      backgroundAttachment: "scroll",        
-      minHeight: "200vh",                    
-      width: "100%",
-    }}
-    
-  >
-      {/* Navbar */}
+      className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/actions.png)`,
+        backgroundRepeat: "repeat-y",
+        backgroundSize: "contain",
+        backgroundPosition: "top center",
+        backgroundAttachment: "scroll",
+        minHeight: "200vh",
+        width: "100%",
+      }}
+    >
       <nav className="navbar">
         <ul>
           <li><Link to="/home">Home</Link></li>
@@ -121,14 +93,12 @@ const Actions = () => {
         </ul>
       </nav>
 
-      {/* Sidebar toggle */}
       {hasManageActionPermission && (
         <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
           <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} size="lg" />
         </button>
       )}
 
-      {/* Sidebar */}
       {hasManageActionPermission && (
         <div className={sidebarOpen ? 'sidebar open' : 'sidebar closed'}>
           <h2 className="sidebar-title">Menu</h2>
@@ -146,34 +116,6 @@ const Actions = () => {
       )}
 
       <div className="content">
-        {/* Horse selection for specific views */}
-        {(activeView === 'calendar' || activeView === 'ActHistory') && (
-          <div className="select-horse mb-4">
-            <h3>Select Horse</h3>
-            <select value={selectedHorse} onChange={(e) => setSelectedHorse(e.target.value)}>
-              <option value="">Select Horse</option>
-              {horses.map((horse) => (
-                <option key={horse._id} value={horse._id}>{horse.name}</option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* View filters for calendar */}
-        {hasManageActionPermission && activeView === 'calendar' && (
-          <div className="filters">
-            <div className="select-type">
-              <h3>Procedure Type</h3>
-              <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-                <option value="">Select Type</option>
-                <option value="Medical Checkup">Medical Checkup</option>
-                <option value="Training">Training</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Display calendar above other content only if user has permission */}
         {hasManageActionPermission && activeView === 'calendar' && (
           <div className="procedure-calendar">
             <ActScheduler
@@ -184,19 +126,25 @@ const Actions = () => {
           </div>
         )}
 
-        {/* Lazy-loaded views */}
         <Suspense fallback={<div>Loading...</div>}>
           {activeView === 'Analysis' && <Analysis />}
           {activeView === 'add' && <AddAct />}
-          {activeView === 'ActHistory' && (
-            selectedHorse ? (
-              <ActHistory horseId={selectedHorse} />
-            ) : (
-              <p className="text-red-600 p-4 font-medium">Please select a horse to view its act history.</p>
-            )
-          )}
+          {activeView === 'ActHistory' && <ActHistory />}
         </Suspense>
       </div>
+
+      {/* ✅ Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal">
+            <h3>Are you sure you want to log out?</h3>
+            <div className="modal-buttons">
+              <button className="confirm" onClick={confirmLogout}>Yes</button>
+              <button className="cancel" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

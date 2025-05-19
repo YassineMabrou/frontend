@@ -47,8 +47,6 @@ const TransportReport = () => {
           <thead>
             <tr>
               <th>Horse</th>
-              <th>Breed</th>
-              <th>Owner</th>
               <th>Transporter</th>
               <th>Departure</th>
               <th>Arrival</th>
@@ -62,8 +60,6 @@ const TransportReport = () => {
             {report.map((t, idx) => (
               <tr key={idx}>
                 <td>{t.horse?.name}</td>
-                <td>{t.horse?.breed}</td>
-                <td>{t.horse?.owner}</td>
                 <td>{t.transporter}</td>
                 <td>{new Date(t.departureTime).toLocaleString()}</td>
                 <td>{new Date(t.arrivalTime).toLocaleString()}</td>
