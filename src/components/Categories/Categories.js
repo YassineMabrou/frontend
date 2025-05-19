@@ -49,10 +49,11 @@ const Categories = () => {
 
     // Collect horse and note IDs from categories
     categories.forEach((category) => {
-      if (category.type === 'horse') {
+      // Make sure `category.horses` is an array before using it
+      if (category.type === 'horse' && Array.isArray(category.horses)) {
         horseIds = [...horseIds, ...category.horses];
       }
-      if (category.type === 'note') {
+      if (category.type === 'note' && Array.isArray(category.notes)) {
         noteIds = [...noteIds, ...category.notes];
       }
     });
