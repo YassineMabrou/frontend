@@ -49,10 +49,10 @@ const Categories = () => {
 
     // Collect horse and note IDs from categories
     categories.forEach((category) => {
-      if (category.type === 'horse') {
+      if (category.type === 'horse' && Array.isArray(category.horses)) {  // Ensure horses is an array
         horseIds = [...horseIds, ...category.horses];
       }
-      if (category.type === 'note') {
+      if (category.type === 'note' && Array.isArray(category.notes)) {  // Ensure notes is an array
         noteIds = [...noteIds, ...category.notes];
       }
     });
@@ -70,12 +70,11 @@ const Categories = () => {
         acc[horse._id] = horse.name; // Store horse name by ID
         return acc;
       }, {});
-      
+
       // Log the map of horse names
       console.log("Horse names object:", horseNamesObj);
 
       setHorseNames(horseNamesObj); // Set all horses by ID
-
     } catch (error) {
       console.error('Error fetching horses:', error);
     }
@@ -249,7 +248,6 @@ const Categories = () => {
                 {activeView === 'addNote' && <AddNoteCategory />}
                 {activeView === 'assignHorse' && <AssignHorseToCategory />}
                 {activeView === 'assignNote' && <AssignNoteToCategory />}
-
                 {activeView === 'list' && (
                   <>
                     {['horse', 'note'].map((type) => (
